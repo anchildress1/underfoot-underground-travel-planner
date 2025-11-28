@@ -1,12 +1,12 @@
-import os
 from functools import lru_cache
-from typing import Literal
 
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
+
+    model_config = SettingsConfigDict(env_file=".env", case_sensitive=False)
 
     log_level: str = "INFO"
 
@@ -21,10 +21,6 @@ class Settings(BaseSettings):
     supabase_anon_key: str
     supabase_service_role_key: str | None = None
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
-
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
@@ -36,4 +32,4 @@ def get_settings() -> Settings:
     Raises:
         ValidationError: If required environment variables are missing
     """
-    return Settings()
+    return Settings()  # type: ignore[call-arg]

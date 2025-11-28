@@ -11,7 +11,7 @@ logger = get_logger(__name__)
 settings = get_settings()
 
 
-async def normalize_location(raw_input):
+async def normalize_location(raw_input: str) -> NormalizedLocation | None:
     """Normalize location using Google Maps Geocoding API.
 
     Args:
@@ -44,7 +44,7 @@ async def normalize_location(raw_input):
 
         result = data["results"][0]
         normalized = result.get("formatted_address", raw_input)
-        
+
         location = result.get("geometry", {}).get("location", {})
         coordinates = None
         if location.get("lat") and location.get("lng"):

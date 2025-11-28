@@ -1,10 +1,11 @@
 """Request context and tracing middleware."""
 
 import time
+from collections.abc import Awaitable, Callable
 from contextvars import ContextVar
 from uuid import uuid4
 
-from fastapi import Request
+from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from src.utils.logger import get_logger
@@ -26,7 +27,9 @@ def generate_request_id() -> str:
 class RequestTracingMiddleware(BaseHTTPMiddleware):
     """Middleware to add request tracing and logging."""
 
-    async def dispatch(self, request: Request, call_next):
+    async def dispatch(
+        self, request: Request, call_next: Callable[[Request], Awaitable[Response]]
+    ) -> Response:
         """Process request with tracing.
 
         Args:

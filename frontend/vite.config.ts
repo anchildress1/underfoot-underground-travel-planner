@@ -40,6 +40,7 @@ export default defineConfig({
         'src/main.tsx',
         'src/types/**',
         'src/services/googlePlaces.ts',
+        'src/services/api.ts',
         'src/components/MapView.tsx',
         'src/components/GoogleMapView.tsx',
       ],

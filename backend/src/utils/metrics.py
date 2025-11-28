@@ -2,8 +2,7 @@
 
 import time
 from collections import defaultdict
-from dataclasses import asdict, dataclass
-from typing import Any
+from dataclasses import dataclass
 
 from src.utils.logger import get_logger
 

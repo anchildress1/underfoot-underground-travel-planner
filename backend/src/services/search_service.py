@@ -3,6 +3,7 @@
 import asyncio
 import time
 from dataclasses import asdict
+from typing import Any
 from uuid import uuid4
 
 from src.models.domain_models import SearchContext
@@ -72,6 +73,8 @@ async def execute_search(
         raise ValueError("Unable to parse location and intent from input")
 
     normalized = await geocoding_service.normalize_location(parsed.location)
+    if not normalized:
+        raise ValueError(f"Unable to normalize location: {parsed.location}")
 
     search_context = SearchContext(
         location=normalized.normalized,
@@ -88,7 +91,7 @@ async def execute_search(
         return_exceptions=True,
     )
 
-    all_results = []
+    all_results: list[Any] = []
     source_stats = {}
 
     for idx, result in enumerate(results):
@@ -97,8 +100,8 @@ async def execute_search(
             logger.error(f"{source_name}.failed", error=str(result))
             source_stats[source_name] = {"count": 0, "status": "failed", "error": str(result)}
         else:
-            all_results.extend(result)
-            source_stats[source_name] = {"count": len(result), "status": "success"}
+            all_results.extend(result)  # type: ignore[arg-type]
+            source_stats[source_name] = {"count": len(result), "status": "success"}  # type: ignore[arg-type]
 
     scored_results = scoring_service.score_and_rank_results(
         all_results, {"intent": parsed.intent, "location": search_context.location}
