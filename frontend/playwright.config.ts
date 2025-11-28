@@ -1,4 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
+import dotenv from 'dotenv';
+
+const envConfig = dotenv.config({ path: '.env.test' });
 
 export default defineConfig({
   testDir: './test/e2e',
@@ -22,5 +25,6 @@ export default defineConfig({
     url: 'http://localhost:5173',
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
+    env: envConfig.parsed || {},
   },
 });
