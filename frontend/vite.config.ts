@@ -6,6 +6,7 @@ export default defineConfig({
     react(),
     {
       name: 'html-transform',
+      apply: 'build',
       transformIndexHtml(html) {
         return html.replace(
           /%VITE_GOOGLE_MAPS_API_KEY%/g,
