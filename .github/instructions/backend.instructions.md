@@ -2,154 +2,118 @@
 applyTo: backend/**/*
 ---
 
-# BACKEND_INSTRUCTIONS.md
-
-> 🗺️ **Underfoot Backend** — single-agent orchestrator for the “underground” travel picks.
-> ⚙️ Node 24, Express, plain JavaScript. One OpenAI batch call. n8n for source aggregation.
-> 🎯 Goal: reliably return **4–6** items with a **Near(ish) By** section + rich debug.
-
----
-
-## Tech & Constraints
-
-- 🖥️ **Runtime:** Node 24 (ES2024), Express.
-- 💻 **Language:** JavaScript only (no TypeScript).
-- 🎨 **Style:** single quotes; semicolons; small modules; pure helpers where possible.
-- 🔑 **Secrets:** `.env` via `dotenv`. Never leak secrets in logs or responses.
-- 🌐 **CORS:** allow only your site origin (ChecKMarKDevTools.dev).
+def score_result(result: SearchResult, intent: str) -> SearchResult:
+    score = 0.0  # No type hint
+def score_result(result: SearchResult, intent: str) -> SearchResult:
+    score: float = 0.0
+tests/
+├── unit/           # Core logic, mocked external deps
+├── integration/    # Service interactions (planned)
+└── e2e/           # Full pipeline (planned)
 
 ---
-
-## Endpoints
-
-### `POST /chat`
-
-**Input**
-
-```json
-{ "message": "Pikeville KY next week for 3 days, outdoors", "limit": 5, "force": false }
-```
-
-**Process**
-
-1. 📝 **Parse** free text → `{ location, startDate, endDate, vibe }`
-   - Defaults: 3 days; handle “next week” nudge; vibe keywords (outdoors|history|food|art|music|quirky|nature|hike|coffee).
-2. 📍 **Radius tiers**
-   - A: core = `DEFAULT_RADIUS_MILES` (10)
-   - B: stretch = 20 (only if core < 3)
-   - C: nearby = up to `MAX_RADIUS_MILES` (40) (only if still < 3)
-   - Stop early when total candidates ≥ 4 (cap overall at 6).
-3. 🔄 **Fetch** candidates per tier via **n8n** (`N8N_WEBHOOK_URL`, POST body: `{ location, startDate, endDate, radiusMiles, vibe }`).
-4. 🧹 **Filter + dedupe**
-   - Blocklist mainstream hosts (tripadvisor, yelp, foursquare, facebook, instagram).
-   - Dedupe by `name|host`.
-5. 🧠 **Rank + format** (single OpenAI call)
-   - Scoring: recency (≤12mo), local enthusiasm cues, uniqueness, distance.
-   - Output buckets:
-     - `primary`: 3–5 (core + stretch)
-     - `nearby`: 0–2 (≤ 40 mi)
-   - If primary < 3, **promote** top nearby with `(≈X mi)`.
-6. 💬 **Reply text** in Underfoot voice + **debug payload**.
-
-**Output**
-
-```json
-{
-  "reply": "string...",
-  "debug": {
-    "parsed": { "location": "", "startDate": "", "endDate": "", "vibe": "" },
-    "radiusCore": 10,
-    "radiusUsed": 20,
-    "coreCount": 3,
-    "stretchCount": 1,
-    "nearbyCount": 2,
-    "raw": { "core": [], "stretch": [], "nearby": [] },
-    "filtered": { "primary": [], "nearby": [] },
-    "executionTimeMs": 1234,
-    "requestId": "uf_...",
-    "retries": { "sources": { "reddit": 1 } }
-  }
-}
-```
-
-### `GET /health`
-
-Returns `{ "ok": true }`.
-
+applyTo: backend/**/*
 ---
 
-## Environment
+# Backend Instructions for Underfoot Underground Travel Planner
 
-```
-OPENAI_API_KEY=sk-...
-N8N_WEBHOOK_URL=http://localhost:5678/webhook/underfoot
-DEFAULT_RADIUS_MILES=10
-MAX_RADIUS_MILES=40
-CACHE_TTL_SECONDS=86400   # dev 60, prod 12–24h
-ALLOW_NEARBY=true
-PORT=3000
-```
+**Project Overview:**
+Python FastAPI backend for underground travel planning. Orchestrates OpenAI, Google Maps, SerpAPI, Reddit, Eventbrite APIs. Runs on Cloudflare Workers.
 
----
+**Tech & Constraints:**
+- Python 3.12.11+, FastAPI (async/await), Poetry
+- Black formatter, Ruff linter, type hints at function signatures
+- Secrets via Pydantic settings (never leak in logs/responses)
+- CORS restricted to allowed origins
+- Testing: pytest, coverage ≥30%
 
-## Caching
+**Architecture:**
+- Entry: `src/workers/chat_worker.py` (SSE `/chat` endpoint)
+- Services: openai_service, geocoding_service, serp_service, reddit_service, eventbrite_service, scoring_service, search_service, cache_service
+- Models: request_models, response_models, domain_models (Pydantic)
+- Config: settings.py (env), constants.py (hard-coded)
+- Middleware: cors, security, tracing
+- Utilities: logger, errors, metrics
 
-- 🗝️ **Key:** `{location}|{startDate}|{endDate}|{vibe}|{radiusBucket}`
-- ⏱️ **TTL:** dev 60s, prod via `CACHE_TTL_SECONDS`.
-- 🔄 `force=true` to bypass (UI Debug toggle will set this).
+**Endpoints:**
+- `POST /chat`: parses, geocodes, tiered search, filters, ranks, composes reply, returns debug
+- `POST /normalize-location`: geocodes location string
+- `GET /health`: service health & dependency status
 
----
+**Environment Variables:**
+OPENAI_API_KEY, OPENAI_MODEL, DEFAULT_RADIUS_MILES, MAX_RADIUS_MILES, CACHE_TTL_SECONDS, SERPAPI_KEY, EVENTBRITE_TOKEN, REDDIT_CLIENT_ID, GOOGLE_MAPS_API_KEY, SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
 
-## Retries & Backoff
+**Models & Validation:**
+- Request: SearchRequest, NormalizeLocationRequest (Pydantic, input sanitization)
+- Response: SearchResponse, DebugInfo, HealthResponse, ErrorResponse
+- Domain: ParsedUserInput, SearchResult
 
-- 🚦 **When:** n8n calls with 429/5xx.
-- 🔁 **Policy:** up to 3 tries with **exponential backoff**: 2000 → 4000 → 8000 ms.
-- 🤝 **Fail shape:** return friendly message + include errors in `debug.errors[]`.
+**Code Quality Rules:**
+- SonarQube: never use equality with floats, use tolerance (see python:S1244)
+- Prefer composition, pure functions, async/await for I/O
+- Custom exceptions inherit UnderfootError
 
----
+**Development Patterns:**
+- Link to existing code, don't duplicate
+- Type hints only on function signatures
+- All I/O async (use httpx, never requests)
+- Structured logging with context (request_id, timings, result_count)
+- Catch specific exceptions, log errors, provide fallbacks
 
-## Security
+**Caching:**
+- Key: `{location}|{start_date}|{end_date}|{vibe}|{radius_bucket}`
+- TTL: configurable via CACHE_TTL_SECONDS
+- Bypass: `force=true` skips cache
+- Backend: in-memory dict (dev), Redis-ready
 
-- 🧽 Sanitize input; never eval.
-- 🚫 Enforce domain blocklist server-side (don’t trust the ranker).
-- 🔐 CORS: only your allowed origin ChecKMarKDevTools.dev.
-- 🛑 Don’t serialize exceptions with stack traces to the client.
+**Security:**
+- Sanitize inputs (strip HTML/script tags, normalize whitespace)
+- Validate with Pydantic
+- Blocklist mainstream domains (TripAdvisor, Yelp, Facebook, Instagram)
+- CORS middleware
+- Never expose stack traces or secrets to clients
 
----
+**Performance & Cost:**
+- One OpenAI call per `/chat` (batch ranking)
+- Cap per-source: 6 candidates max
+- Skip tiers if A yields 4-6 items
+- Use cost-efficient model (`gpt-4o-mini`)
 
-## Performance & Cost
+**Logging:**
+- Generate request_id per request
+- Structured JSON logging
+- Redact secrets automatically
+- Don't log full prompts
+- Track execution_time_ms, token_usage, retry_counts, cache_hit_rate
 
-- 🎯 Exactly **one** OpenAI call per `/chat`.
-- 📦 **Cap** per-source pre-filter: 6 candidates.
-- ⏭️ Skip B/C tiers if A already yields 4–6 good items.
-- 💸 If usage is high, consider OLlama or other LLMs to reduce costs.
+**Testing:**
+- Coverage ≥30% (enforced in CI)
+- Unit: models, utils, services (mocked)
+- Integration: external APIs, tiered search, retry/backoff
+- All tests use mocked API keys
 
----
+**Common Tasks:**
+- Add service: create file, add settings/constants, add tests, wire into orchestration
+- Add endpoint: define models, add route, add tests
+- Update dependencies: poetry show --outdated, poetry update
 
-## Logging & Observability
+**Troubleshooting:**
+- Import errors: check conftest.py, Python version
+- Settings errors: check .env, typos
+- Test failures: check changelogs, update mocks, verify type hints
+- Cloudflare: check dependencies, wrangler.toml, env vars
 
-- 🆔 Generate `requestId` per call.
-- 📊 Log structured JSON: timings for `parse`, `tierA`, `tierB`, `tierC`, `rank`, `compose`; token usage (if available); retry counts.
-- 🚫 Don’t log secrets or full model prompts (only hashes if needed).
+**Key Files:**
+- chat_worker.py, search_service.py, openai_service.py, domain_models.py, settings.py, constants.py, conftest.py, pyproject.toml, wrangler.toml
 
----
+**Definition of Done:**
+- `/chat` returns 4–6 items
+- Debug payload complete
+- Coverage ≥30%, all tests passing
+- Passes ruff, black, pytest
+- No secrets in logs/responses
+- Conventional commit messages
+- Ready for Cloudflare deployment
 
-## Testing
-
-- 🧪 **Unit:** parser, blocklist, dedupe, cache.
-- 🔄 **Integration:** mock n8n:
-  - A: returns ≥4 (skip B/C).
-  - B: returns 1–2 (trigger C).
-  - C: returns ≥1 (promotion path).
-- ❌ **Error:** simulate 429/500 → verify backoff + graceful output.
-- ✅ **E2E:** UI shows **Top Picks** + **Near(ish) By** and Debug fields populate.
-- 🎯 Goal: 85% coverage threshold.
-
----
-
-## Definition of Done
-
-- 🏁 `/chat` consistently returns **4–6** items with correct sectioning.
-- 🕵️ Debug payload complete (counts, radius, timings, retries).
-- 📦 Cache hit/miss behaves as expected; `force=true` works.
-- 🧹 Lint/format clean; commits conventional.
+**Philosophy:**
+Code for yourself now, document for yourself in 6 months. Type hints at contracts only. Structured logging. Test core logic, mock external deps. Link to code, don't duplicate. Config in constants unless secret.

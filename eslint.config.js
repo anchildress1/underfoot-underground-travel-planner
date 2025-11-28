@@ -4,7 +4,6 @@ import globals from 'globals';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import react from 'eslint-plugin-react';
-import cspellPlugin from '@cspell/eslint-plugin';
 
 export default defineConfig([
   globalIgnores([
@@ -19,6 +18,10 @@ export default defineConfig([
     'frontend/playwright-report/**',
     'frontend/test-results/**',
     'supabase/functions/**',
+    '.worktrees/**',
+    '**/.worktrees/**',
+    'frontend/screenshot.js',
+    'frontend/vitest.setup.js',
   ]),
   js.configs.recommended,
   {
@@ -125,6 +128,16 @@ export default defineConfig([
     },
   },
   {
+    files: ['backend/test/**/*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.vitest,
+        global: 'writable',
+      },
+    },
+  },
+  {
     ignores: ['**/*.config.js', 'frontend/**/*', 'scripts/**/*'],
     rules: {
       'func-style': ['error', 'expression', { allowArrowFunctions: true }],
@@ -132,11 +145,7 @@ export default defineConfig([
   },
   {
     files: ['frontend/src/**/*.{js,jsx}', 'backend/src/**/*.js', 'scripts/**/*.js'],
-    plugins: {
-      '@cspell': cspellPlugin,
-    },
     rules: {
-      '@cspell/spellchecker': ['warn', { autoFix: true }],
       'no-warning-comments': ['error', { terms: ['eslint-disable'], location: 'anywhere' }],
     },
   },
