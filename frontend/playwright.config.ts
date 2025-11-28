@@ -18,14 +18,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run dev',
+    command: 'npm run dev -- --mode test',
     url: 'http://localhost:5173',
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
-    env: {
-      ...process.env,
-      VITE_GOOGLE_MAPS_API_KEY: 'test-key-placeholder',
-      VITE_API_BASE: 'http://localhost:8000',
-    },
   },
 });
