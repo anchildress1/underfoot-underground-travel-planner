@@ -1,8 +1,8 @@
 """Supabase database service."""
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from functools import lru_cache
-from typing import Any
+from typing import Any, cast
 
 from supabase import Client, create_client
 
@@ -20,7 +20,7 @@ def get_supabase_client() -> Client:
         Supabase client instance
     """
     settings = get_settings()
-    return create_client(settings.supabase_url, settings.supabase_service_role_key)
+    return create_client(settings.supabase_url, settings.supabase_service_role_key or "")
 
 
 class SupabaseService:
@@ -29,7 +29,7 @@ class SupabaseService:
     _instance = None
     _client = None
 
-    def __new__(cls):
+    def __new__(cls) -> "SupabaseService":
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
@@ -62,7 +62,7 @@ class SupabaseService:
             True if stored successfully
         """
         try:
-            expires_at = datetime.now(timezone.utc) + timedelta(seconds=ttl_seconds)
+            expires_at = datetime.now(UTC) + timedelta(seconds=ttl_seconds)
 
             data = {
                 "query_hash": query_hash,
@@ -72,7 +72,7 @@ class SupabaseService:
                 "expires_at": expires_at.isoformat(),
             }
 
-            response = self.client.table("search_results").upsert(data).execute()
+            _response = self.client.table("search_results").upsert(data).execute()
 
             logger.info(
                 "supabase.cache_stored",
@@ -101,13 +101,13 @@ class SupabaseService:
                 self.client.table("search_results")
                 .select("*")
                 .eq("query_hash", query_hash)
-                .gt("expires_at", datetime.now(timezone.utc).isoformat())
+                .gt("expires_at", datetime.now(UTC).isoformat())
                 .execute()
             )
 
             if response.data and len(response.data) > 0:
                 logger.info("supabase.cache_hit", query_hash=query_hash)
-                return response.data[0]["results_json"]
+                return cast(dict, response.data[0]["results_json"])
 
             logger.info("supabase.cache_miss", query_hash=query_hash)
             return None
@@ -137,7 +137,7 @@ class SupabaseService:
             True if stored successfully
         """
         try:
-            expires_at = datetime.now(timezone.utc) + timedelta(days=ttl_days)
+            expires_at = datetime.now(UTC) + timedelta(days=ttl_days)
 
             data = {
                 "raw_input": raw_input,
@@ -147,7 +147,7 @@ class SupabaseService:
                 "expires_at": expires_at.isoformat(),
             }
 
-            response = self.client.table("location_cache").upsert(data).execute()
+            _response = self.client.table("location_cache").upsert(data).execute()
 
             logger.info(
                 "supabase.location_stored",
@@ -176,13 +176,13 @@ class SupabaseService:
                 self.client.table("location_cache")
                 .select("*")
                 .eq("raw_input", raw_input)
-                .gt("expires_at", datetime.now(timezone.utc).isoformat())
+                .gt("expires_at", datetime.now(UTC).isoformat())
                 .execute()
             )
 
             if response.data and len(response.data) > 0:
                 logger.info("supabase.location_hit", raw_input=raw_input)
-                return response.data[0]
+                return cast(dict[Any, Any], response.data[0])
 
             logger.info("supabase.location_miss", raw_input=raw_input)
             return None
@@ -199,17 +199,11 @@ class SupabaseService:
         """
         try:
             search_count = len(
-                self.client.table("search_results")
-                .select("id", count="exact")
-                .execute()
-                .data
+                self.client.table("search_results").select("id", count="exact").execute().data
             )
 
             location_count = len(
-                self.client.table("location_cache")
-                .select("id", count="exact")
-                .execute()
-                .data
+                self.client.table("location_cache").select("id", count="exact").execute().data
             )
 
             return {

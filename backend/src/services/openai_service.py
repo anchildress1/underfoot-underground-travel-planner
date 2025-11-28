@@ -14,7 +14,6 @@ from src.config.constants import (
 )
 from src.config.settings import get_settings
 from src.models.domain_models import ParsedInput
-from src.utils.errors import UpstreamError
 from src.utils.logger import get_logger
 
 logger = get_logger(__name__)

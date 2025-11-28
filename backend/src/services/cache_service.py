@@ -1,8 +1,7 @@
 """Cache service with Supabase persistence."""
 
 import hashlib
-import json
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from src.config.constants import LOCATION_CACHE_TTL_HOURS, SUPABASE_CACHE_TTL_MINUTES
@@ -51,7 +50,10 @@ async def get_cached_search_results(query: str, location: str) -> dict[str, Any]
 
 
 async def set_cached_search_results(
-    query: str, location: str, results: dict[str, Any], ttl_minutes: int = SUPABASE_CACHE_TTL_MINUTES
+    query: str,
+    location: str,
+    results: dict[str, Any],
+    ttl_minutes: int = SUPABASE_CACHE_TTL_MINUTES,
 ) -> bool:
     """Cache search results in Supabase.
 
@@ -98,10 +100,10 @@ async def get_cached_location(raw_input: str) -> dict[str, Any] | None:
 
     try:
         result = (
-            supabase.table("location_cache")
+            supabase.client.table("location_cache")
             .select("*")
             .eq("raw_input", raw_input.strip().lower())
-            .gt("expires_at", datetime.now(timezone.utc).isoformat())
+            .gt("expires_at", datetime.now(UTC).isoformat())
             .single()
             .execute()
         )
@@ -144,9 +146,9 @@ async def set_cached_location(
         return False
 
     try:
-        expires_at = (datetime.now(timezone.utc) + timedelta(hours=ttl_hours)).isoformat()
+        expires_at = (datetime.now(UTC) + timedelta(hours=ttl_hours)).isoformat()
 
-        supabase.table("location_cache").upsert(
+        supabase.client.table("location_cache").upsert(
             {
                 "raw_input": raw_input.strip().lower(),
                 "normalized_location": normalized,

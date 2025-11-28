@@ -3,6 +3,25 @@ import { render, screen, waitFor } from '../utils/test-utils';
 import userEvent from '@testing-library/user-event';
 import App from '../../src/App';
 
+vi.mock('../../src/services/api', () => ({
+  sendChatMessage: vi.fn().mockResolvedValue({
+    user_intent: 'find temples',
+    user_location: 'Athens',
+    response: 'Here are some ancient temples in Athens...',
+    places: [],
+    debug: {
+      request_id: 'test-123',
+      execution_time_ms: 100,
+    },
+  }),
+  checkHealth: vi.fn().mockResolvedValue({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    elapsed_ms: 10,
+    dependencies: {},
+  }),
+}));
+
 vi.mock('../../src/services/mockGooglePlaces', () => ({
   googlePlacesService: {
     searchPlaces: vi.fn().mockResolvedValue([]),

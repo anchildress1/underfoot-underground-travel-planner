@@ -1,6 +1,7 @@
 name = "underfoot-python-backend"
 main = "src/workers/chat_worker.py"
-compatibility_date = "2025-01-01"
+compatibility_date = "2025-10-31"
+compatibility_flags = ["python_workers"]
 
 [build]
 command = "poetry export -f requirements.txt --output requirements.txt --without-hashes"

@@ -35,7 +35,7 @@ async def search_hidden_gems(location: str, intent: str) -> list[SearchResult]:
         async with httpx.AsyncClient(
             timeout=httpx.Timeout(HTTP_TIMEOUT_SECONDS, connect=HTTP_CONNECT_TIMEOUT_SECONDS)
         ) as client:
-            response = await client.get("https://serpapi.com/search", params=params)
+            response = await client.get("https://serpapi.com/search", params=params)  # type: ignore[arg-type]
             response.raise_for_status()
             data = response.json()
 

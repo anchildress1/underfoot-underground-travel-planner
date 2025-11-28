@@ -1,10 +1,10 @@
 """Unit tests for OpenAI service."""
 
-import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import pytest
+
 from src.services import openai_service
-from src.models.domain_models import ParsedInput
 
 
 @pytest.mark.asyncio
@@ -13,13 +13,13 @@ async def test_parse_user_input_success():
     mock_response = MagicMock()
     mock_response.choices = [
         MagicMock(
-            message=MagicMock(
-                content='{"location": "Pikeville, KY", "intent": "hidden gems"}'
-            )
+            message=MagicMock(content='{"location": "Pikeville, KY", "intent": "hidden gems"}')
         )
     ]
 
-    with patch.object(openai_service.client.chat.completions, 'create', new_callable=AsyncMock) as mock_create:
+    with patch.object(
+        openai_service.client.chat.completions, "create", new_callable=AsyncMock
+    ) as mock_create:
         mock_create.return_value = mock_response
 
         result = await openai_service.parse_user_input("hidden gems in Pikeville KY")
@@ -33,7 +33,9 @@ async def test_parse_user_input_success():
 @pytest.mark.asyncio
 async def test_parse_user_input_fallback():
     """Test fallback parsing when OpenAI fails."""
-    with patch.object(openai_service.client.chat.completions, 'create', new_callable=AsyncMock) as mock_create:
+    with patch.object(
+        openai_service.client.chat.completions, "create", new_callable=AsyncMock
+    ) as mock_create:
         mock_create.side_effect = Exception("API error")
 
         result = await openai_service.parse_user_input("hidden gems in Pikeville KY")
@@ -54,12 +56,12 @@ async def test_generate_response_success():
         )
     ]
 
-    with patch.object(openai_service.client.chat.completions, 'create', new_callable=AsyncMock) as mock_create:
+    with patch.object(
+        openai_service.client.chat.completions, "create", new_callable=AsyncMock
+    ) as mock_create:
         mock_create.return_value = mock_response
 
-        places = [
-            {"name": "Secret Cave", "description": "A mysterious underground cavern"}
-        ]
+        places = [{"name": "Secret Cave", "description": "A mysterious underground cavern"}]
         summary = {"total_results": 1, "average_score": 0.8}
 
         result = await openai_service.generate_response(
@@ -74,7 +76,9 @@ async def test_generate_response_success():
 @pytest.mark.asyncio
 async def test_generate_response_fallback():
     """Test fallback response when OpenAI fails."""
-    with patch.object(openai_service.client.chat.completions, 'create', new_callable=AsyncMock) as mock_create:
+    with patch.object(
+        openai_service.client.chat.completions, "create", new_callable=AsyncMock
+    ) as mock_create:
         mock_create.side_effect = Exception("API error")
 
         places = [{"name": "Test Place", "description": "Test description"}]

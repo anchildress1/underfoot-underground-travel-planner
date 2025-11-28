@@ -1,6 +1,5 @@
 """Unit tests for scoring service."""
 
-import pytest
 
 from src.models.domain_models import SearchResult
 from src.services import scoring_service

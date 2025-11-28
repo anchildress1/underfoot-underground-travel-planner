@@ -139,7 +139,6 @@ export function GoogleMapView({
             scaledSize: new window.google.maps.Size(size, pinHeight),
             anchor: new window.google.maps.Point(size / 2, pinHeight),
           },
-          animation: window.google.maps.Animation.DROP,
           zIndex: isSelected ? 1000 : undefined,
         });
 

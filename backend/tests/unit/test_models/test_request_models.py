@@ -3,7 +3,7 @@
 import pytest
 from pydantic import ValidationError
 
-from src.models.request_models import SearchRequest, NormalizeLocationRequest
+from src.models.request_models import NormalizeLocationRequest, SearchRequest
 
 
 def test_search_request_valid():

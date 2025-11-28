@@ -1,12 +1,14 @@
 """Request models with validation."""
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from src.config.constants import MAX_CHAT_INPUT_LENGTH, MIN_CHAT_INPUT_LENGTH
 
 
 class SearchRequest(BaseModel):
     """Search request with comprehensive validation."""
+
+    model_config = ConfigDict(extra="forbid")
 
     chat_input: str = Field(
         ...,
@@ -39,15 +41,11 @@ class SearchRequest(BaseModel):
 
         return sanitized.strip()
 
-    class Config:
-        extra = "forbid"
-
 
 class NormalizeLocationRequest(BaseModel):
     """Location normalization request."""
 
+    model_config = ConfigDict(extra="forbid")
+
     input: str = Field(..., min_length=1, max_length=200, description="Raw location input")
     force: bool = Field(default=False, description="Force cache bypass")
-
-    class Config:
-        extra = "forbid"

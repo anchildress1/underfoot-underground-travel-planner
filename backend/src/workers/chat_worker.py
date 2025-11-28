@@ -11,7 +11,7 @@ from src.middleware.cors_middleware import add_cors_middleware
 from src.middleware.security_middleware import SecurityHeadersMiddleware
 from src.middleware.tracing_middleware import RequestTracingMiddleware, request_id_var
 from src.models.request_models import SearchRequest
-from src.models.response_models import HealthResponse
+from src.models.response_models import HealthResponse, SearchResponse
 from src.services import cache_service, search_service
 from src.utils.errors import UnderfootError
 from src.utils.input_sanitizer import InputSanitizer, IntentParser
@@ -28,7 +28,7 @@ add_cors_middleware(app)
 
 
 @app.exception_handler(UnderfootError)
-async def underfoot_error_handler(request: Request, exc: UnderfootError):
+async def underfoot_error_handler(request: Request, exc: UnderfootError) -> JSONResponse:
     """Handle custom exceptions with structured logging.
 
     Args:
@@ -59,7 +59,7 @@ async def underfoot_error_handler(request: Request, exc: UnderfootError):
 
 
 @app.exception_handler(ValidationError)
-async def validation_error_handler(request: Request, exc: ValidationError):
+async def validation_error_handler(request: Request, exc: ValidationError) -> JSONResponse:
     """Handle Pydantic validation errors.
 
     Args:
@@ -84,7 +84,7 @@ async def validation_error_handler(request: Request, exc: ValidationError):
 
 
 @app.exception_handler(Exception)
-async def global_error_handler(request: Request, exc: Exception):
+async def global_error_handler(request: Request, exc: Exception) -> JSONResponse:
     """Catch-all error handler for unexpected exceptions.
 
     Args:
@@ -115,7 +115,7 @@ async def global_error_handler(request: Request, exc: Exception):
 
 
 @app.get("/health", response_model=HealthResponse)
-async def health():
+async def health() -> HealthResponse:
     """Comprehensive health check endpoint.
 
     Returns:
@@ -144,7 +144,7 @@ async def health():
 
 
 @app.post("/underfoot/search")
-async def search(request: SearchRequest):
+async def search(request: SearchRequest) -> SearchResponse:
     """Execute search with AI orchestration.
 
     Args:
@@ -167,19 +167,19 @@ async def search(request: SearchRequest):
             intent=intent,
             vector_query=vector_query,
         )
-        return result
+        return SearchResponse(**result)
 
     except UnderfootError:
         raise
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e)) from e
     except Exception as e:
         logger.error("search.error", error=str(e), exc_info=True)
-        raise HTTPException(status_code=500, detail="Search failed")
+        raise HTTPException(status_code=500, detail="Search failed") from e
 
 
 @app.get("/")
-async def root():
+async def root() -> dict[str, str | dict[str, str]]:
     """Root endpoint.
 
     Returns:

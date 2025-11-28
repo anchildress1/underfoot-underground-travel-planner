@@ -23,7 +23,7 @@ async def search_reddit_rss(location: str, intent: str) -> list[SearchResult]:
     """
     try:
         query = f"{intent} {location}"
-        url = f"https://www.reddit.com/search.json"
+        url = "https://www.reddit.com/search.json"
         params = {"q": query, "limit": 10, "sort": "relevance"}
 
         headers = {"User-Agent": "Underfoot/1.0"}
@@ -31,7 +31,7 @@ async def search_reddit_rss(location: str, intent: str) -> list[SearchResult]:
         async with httpx.AsyncClient(
             timeout=httpx.Timeout(HTTP_TIMEOUT_SECONDS, connect=HTTP_CONNECT_TIMEOUT_SECONDS)
         ) as client:
-            response = await client.get(url, params=params, headers=headers)
+            response = await client.get(url, params=params, headers=headers)  # type: ignore[arg-type]
             response.raise_for_status()
             data = response.json()
 
