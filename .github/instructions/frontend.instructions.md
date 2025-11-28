@@ -13,7 +13,7 @@ ES2020+ with ES6 syntax. TypeScript is present and fine to maintain, but prefer 
 ## Tech Stack
 
 - React 18, Vite, Tailwind CSS, Node 24+.
-- Source: `frontend/src/` (App.jsx, main.jsx, components/*)
+- Source: `frontend/src/` (App.tsx, main.tsx, components/*.tsx)
 
 ## Security
 
@@ -84,26 +84,26 @@ Test value, not lines. Focus on critical paths and user interactions, not implem
 ### Unit Testing
 
 - Vitest + React Testing Library + jsdom.
-- Tests: `frontend/src/__tests__/unit/` (unit), `frontend/src/__tests__/integration/` (integration)
+- Tests: `frontend/test/unit/` (unit), `frontend/test/integration/` (integration)
 - Coverage: lines/statements/functions ≥85%, branches ≥80% (enforced in CI).
-- Run: `npm run test` (runs both unit and integration).
+- Run: `npm run test` (runs unit tests with coverage).
 - UI: `npm run test:ui`.
 - Coverage prints to console by default.
 
 ### End-to-End Testing
 
 - Playwright (Chromium).
-- Tests: `frontend/tests-e2e/`
-- Config: `frontend/playwright.config.js` (baseURL matches Vite base).
+- Tests: `frontend/test/e2e/`
+- Config: `frontend/playwright.config.ts` (builds and serves dist, uses 127.0.0.1:5173).
 - Reporter: list + HTML (auto-opens on failure locally).
 - Trace/video/screenshots on failure.
 - Run: `npm run test:e2e` (headless), `npx playwright test --headed` (headed), `npx playwright test --ui` (UI runner).
-- Open last HTML report: `npm run test:e2e:report`
 
-### Mocking Backend for E2E
+### E2E Test Environment
 
-- Playwright e2e tests intercept `/chat` requests and return mocked data, so tests pass without a backend.
-- When backend is ready, remove/disable route mocks for full integration.
+- Playwright builds frontend and serves via static server.
+- CI workflow passes VITE_GOOGLE_MAPS_API_KEY and VITE_API_BASE as environment variables.
+- Tests do not require real Google Maps API key or backend.
 
 ## Dependencies
 
@@ -168,32 +168,30 @@ Lazy load, debounce, cache, batch. Memo only when profiled.
 
 ## CI/CD
 
-- Workflow: `.github/workflows/ci.yml`
-- Node 22+, npm cache, lint, unit tests (coverage upload), Playwright e2e, Playwright report artifact.
+- Workflows: `.github/workflows/build-and-test.yml` (frontend), `.github/workflows/python-backend.yml` (backend).
+- Node 24+, npm ci, format, lint, typecheck, unit tests (coverage upload), Playwright e2e, Playwright report artifact.
 
 ## Local Dev Quick Reference
 
 ```bash
 # Install all deps (repo root)
-npm install --ignore-scripts
+npm install
 
 # Run unit/integration tests with coverage (frontend)
 cd frontend
 npm run test
 
-# Open Vitest coverage HTML report
-npm run test:coverage:report
-
 # Run e2e tests (frontend)
 npx playwright install --with-deps chromium
 npm run test:e2e
 
-# Open last Playwright HTML report
-npm run test:e2e:report
+# Run e2e tests with test env (uses .env.test):
+# Option 1: Pass env vars
+VITE_GOOGLE_MAPS_API_KEY=test-key-placeholder VITE_API_BASE=http://localhost:8000 npm run test:e2e
 
 # Interactive test runners
-npm run test:ui         # Vitest UI
-npx playwright test --ui # Playwright UI
+npm run test:ui
+npx playwright test --ui
 ```
 
 ## Conventions
