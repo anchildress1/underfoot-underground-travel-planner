@@ -18,7 +18,7 @@ jobs:
           node-version: '24'
 
       - name: Install dependencies (workspaces)
-        run: npm i
+        run: npm ci
 
       - name: Format (Prettier)
         run: npm run format
@@ -50,8 +50,6 @@ jobs:
         run: npm run test:e2e
         env:
           CI: true
-          VITE_GOOGLE_MAPS_API_KEY: test-key-placeholder
-          VITE_API_BASE: http://localhost:8000
 
       - name: Upload Playwright report
         if: always()
