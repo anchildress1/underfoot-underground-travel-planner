@@ -1,15 +1,11 @@
 name: Python Backend CI/CD
 
 on:
-  push:
-    branches: [main, develop]
-    paths:
-      - 'backend-python/**'
-      - '.github/workflows/python-backend.yml'
   pull_request:
     branches: [main]
     paths:
-      - 'backend-python/**'
+      - 'backend/**'
+      - '.github/workflows/python-backend.yml'
   workflow_dispatch:
 
 jobs:
@@ -34,19 +30,19 @@ jobs:
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Install dependencies
-        working-directory: ./backend-python
+        working-directory: ./backend
         run: |
           poetry install
 
       - name: Run tests with coverage
-        working-directory: ./backend-python
+        working-directory: ./backend
         run: |
           poetry run pytest --cov=src --cov-report=xml --cov-report=term-missing
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
-          file: ./backend-python/coverage.xml
+          file: ./backend/coverage.xml
           flags: python-backend
           name: python-backend-coverage
 
@@ -67,22 +63,22 @@ jobs:
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Install dependencies
-        working-directory: ./backend-python
+        working-directory: ./backend
         run: |
           poetry install
 
       - name: Run Ruff linting
-        working-directory: ./backend-python
+        working-directory: ./backend
         run: |
           poetry run ruff check .
 
       - name: Run Black formatting check
-        working-directory: ./backend-python
+        working-directory: ./backend
         run: |
           poetry run black --check .
 
       - name: Run MyPy type checking
-        working-directory: ./backend-python
+        working-directory: ./backend
         run: |
           poetry run mypy src/
 
@@ -102,13 +98,13 @@ jobs:
           pip install safety bandit
 
       - name: Run Safety check
-        working-directory: ./backend-python
+        working-directory: ./backend
         run: |
           poetry export -f requirements.txt --output requirements.txt --without-hashes
           safety check -r requirements.txt
 
       - name: Run Bandit security scan
-        working-directory: ./backend-python
+        working-directory: ./backend
         run: |
           bandit -r src/ -f json -o bandit-report.json || true
           bandit -r src/
@@ -118,11 +114,11 @@ jobs:
         if: always()
         with:
           name: bandit-security-report
-          path: backend-python/bandit-report.json
+          path: backend/bandit-report.json
 
   deploy:
     needs: [test, lint, security]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
 
     steps:
@@ -140,7 +136,7 @@ jobs:
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Export requirements
-        working-directory: ./backend-python
+        working-directory: ./backend
         run: |
           poetry export -f requirements.txt --output requirements.txt --without-hashes
 
@@ -149,7 +145,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          workingDirectory: backend-python
+          workingDirectory: backend
           command: deploy --config wrangler.toml
 
       - name: Create deployment notification
