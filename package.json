@@ -38,6 +38,7 @@
     "npm": ">=11.5.1"
   },
   "scripts": {
+    "prepare": "[ -n \"$CI\" ] || npx lefthook install",
     "dev": "npm run dev:frontend",
     "dev:backend": "cd backend && poetry run uvicorn src.workers.chat_worker:app --reload --port 8000",
     "dev:frontend": "npm run -w frontend dev",
