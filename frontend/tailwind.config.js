@@ -1,27 +1,93 @@
+/** @type {import('tailwindcss').Config} */
 export default {
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   darkMode: 'class',
-  content: ['./index.html', './src/**/*.{js,jsx}'],
   theme: {
     extend: {
+      fontFamily: {
+        heading: ['Orbitron', 'monospace'],
+        brand: ['Flavors', 'Kablam', 'Frijole', 'display'],
+        body: ['Inter', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
+      },
       colors: {
-        cm: {
-          // Underground inspired palette: basalt, clay, quartz vein accents
-          primary: '#8657D3', // amethyst vein
-          accent: '#E6679E', // rose quartz accent
-          info: '#3BB8C8', // aquifer cyan
-          bg: '#0c0c11', // deeper basalt
-          panel: '#15151c',
-          card: '#1c1c25',
-          border: '#272732',
-          text: '#F5F7FA',
-          sub: '#A7ABBE',
+        cyber: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a',
+        },
+        neon: {
+          50: '#f0f9ff',
+          100: '#e0f2fe',
+          200: '#bae6fd',
+          300: '#7dd3fc',
+          400: '#38bdf8',
+          500: '#0ea5e9',
+          600: '#0284c7',
+          700: '#0369a1',
+          800: '#075985',
+          900: '#0c4a6e',
+        },
+        mystic: {
+          50: '#faf5ff',
+          100: '#f3e8ff',
+          200: '#e9d5ff',
+          300: '#d8b4fe',
+          400: '#c084fc',
+          500: '#a855f7',
+          600: '#9333ea',
+          700: '#7c3aed',
+          800: '#6b21a8',
+          900: '#581c87',
+        },
+        matrix: {
+          50: '#f0fdf4',
+          100: '#dcfce7',
+          200: '#bbf7d0',
+          300: '#86efac',
+          400: '#4ade80',
+          500: '#22c55e',
+          600: '#16a34a',
+          700: '#15803d',
+          800: '#166534',
+          900: '#14532d',
+        },
+        void: {
+          50: '#f8fafc',
+          100: '#f1f5f9',
+          200: '#e2e8f0',
+          300: '#cbd5e1',
+          400: '#94a3b8',
+          500: '#64748b',
+          600: '#475569',
+          700: '#334155',
+          800: '#1e293b',
+          900: '#0f172a',
         },
       },
-      boxShadow: {
-        soft: '0 8px 30px rgba(0,0,0,.35)',
+      animation: {
+        glow: 'glow 2s ease-in-out infinite alternate',
+        steam: 'steam 3s ease-in-out infinite',
+        gear: 'spin 20s linear infinite',
       },
-      fontFamily: {
-        pangolin: ['Pangolin', 'cursive'],
+      keyframes: {
+        glow: {
+          '0%': { boxShadow: '0 0 5px theme(colors.cyber.400)' },
+          '100%': {
+            boxShadow: '0 0 20px theme(colors.cyber.400), 0 0 30px theme(colors.neon.400)',
+          },
+        },
+        steam: {
+          '0%, 100%': { transform: 'translateY(0) scale(1)', opacity: '0.7' },
+          '50%': { transform: 'translateY(-10px) scale(1.1)', opacity: '1' },
+        },
       },
     },
   },
