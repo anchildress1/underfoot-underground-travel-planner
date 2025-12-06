@@ -1,4 +1,74 @@
-# Supabase RLS Security - Fixed
+# Supabase Database
+
+## Quick Start (Local Development)
+
+### 1. Install Supabase CLI
+
+```bash
+brew install supabase/tap/supabase
+```
+
+### 2. Start Local Supabase
+
+```bash
+cd supabase
+supabase start
+```
+
+This spins up local Docker containers for:
+- PostgreSQL database (port 54322)
+- PostgREST API (port 54321)
+- Supabase Studio (port 54323)
+- Inbucket (email testing, port 54324)
+
+### 3. Get Local Credentials
+
+```bash
+supabase status
+```
+
+Copy the credentials (especially `anon key` and `service_role key`) to your backend `.env`:
+
+```bash
+SUPABASE_URL=http://127.0.0.1:54321
+SUPABASE_PUBLISHABLE_KEY=<anon-key-from-status>
+SUPABASE_SECRET_KEY=<service-role-key-from-status>
+```
+
+### 4. Access Studio
+
+Open http://localhost:54323 to:
+- View tables and data
+- Run SQL queries
+- Test RLS policies
+- Monitor logs
+
+### 5. Reset Database
+
+To reapply all migrations from scratch:
+
+```bash
+supabase db reset
+```
+
+### 6. Test Changes
+
+```bash
+# Run backend with local Supabase
+cd ../backend
+poetry run uvicorn src.workers.chat_worker:app --reload
+
+# Test cache writes
+curl http://localhost:8000/health
+```
+
+### 7. Stop Local Stack
+
+```bash
+supabase stop
+```
+
+---
 
 ## What Was Fixed
 
@@ -74,7 +144,7 @@ Call from backend (Python):
 ```python
 from supabase import create_client
 
-supabase = create_client(url, service_role_key)
+supabase = create_client(url, secret_key)
 supabase.rpc('clean_expired_cache').execute()
 ```
 
