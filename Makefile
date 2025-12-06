@@ -43,7 +43,7 @@ install-backend:
 	cd backend && poetry install
 
 install-frontend:
-	npm ci
+	npm install
 
 # Format (run first)
 format: format-backend format-frontend
