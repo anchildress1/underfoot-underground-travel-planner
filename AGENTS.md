@@ -17,9 +17,7 @@ Code style and tooling are important. You should write and refactor code in a wa
 - Pre-commit hooks are run via **lefthook**.
 - Any generated code must be compatible with **Node 22 LTS** (or later LTS).
 
-## Preferred Tools and Documentation
-
-You should use the MCP server #context7 whenever it is available to reference the latest versions of all documentation.
+## Preferred Tools
 
 - **Commitlint** for message validation
 - **Prettier** for consistent formatting
@@ -56,7 +54,7 @@ When generating commit messages, do NOT append any `Signed-off-by:` lines or att
 ## CRITICAL CONSTRAINTS
 
 - **No Committing**: Never commit any code without explicit direct approval by the user.
-- **No Backwards Compatibility**: Never code anything backwards compatible into any apps.
+- **Beta Phase**: Zero backwards compatibility guarantee. Breaking changes are acceptable and encouraged when necessary.
 - **Maximum Cognitive Complexity**: 15
 - **Never expose secrets**: Secrets only in local .env file or secure vault. Never in code, logs, or responses.
 
