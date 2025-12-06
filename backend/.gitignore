@@ -30,6 +30,7 @@ coverage.xml
 # Environment
 .env
 .env.local
+!.env.example
 
 # Cloudflare
 .wrangler/

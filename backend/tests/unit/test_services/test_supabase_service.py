@@ -1,4 +1,4 @@
-"""Integration tests for Supabase service."""
+"""Unit tests for Supabase service."""
 
 from datetime import UTC, datetime, timedelta
 from unittest.mock import MagicMock, patch
@@ -10,11 +10,13 @@ from src.services.supabase_service import SupabaseService
 
 @pytest.fixture
 def supabase_service():
-    """Create fresh SupabaseService instance."""
+    """Create fresh SupabaseService instance with mocked client."""
+    SupabaseService._instance = None
     with patch("src.services.supabase_service.get_supabase_client") as mock_client:
         service = SupabaseService()
         service._client = mock_client.return_value
         yield service
+    SupabaseService._instance = None
 
 
 def test_store_search_results_success(supabase_service):
