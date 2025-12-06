@@ -36,8 +36,8 @@ supabase/
 Set in `.env`:
 ```bash
 SUPABASE_URL=https://uqvwaiexsgprdbdecoxx.supabase.co
-SUPABASE_ANON_KEY=<your-anon-key>
-SUPABASE_SERVICE_ROLE_KEY=<your-service-key>
+SUPABASE_PUBLISHABLE_KEY=<your-publishable-key>
+SUPABASE_SECRET_KEY=<your-secret-key>
 SUPABASE_ACCESS_TOKEN=<your-access-token>
 ```
 
@@ -61,11 +61,11 @@ After deployment, test RLS:
 ```bash
 # Should work (read)
 curl "https://uqvwaiexsgprdbdecoxx.supabase.co/rest/v1/search_results?limit=1" \
-  -H "apikey: $SUPABASE_ANON_KEY"
+  -H "apikey: $SUPABASE_PUBLISHABLE_KEY"
 
 # Should FAIL (delete blocked by RLS)
 curl -X DELETE "https://uqvwaiexsgprdbdecoxx.supabase.co/rest/v1/search_results?id=eq.xxx" \
-  -H "apikey: $SUPABASE_ANON_KEY"
+  -H "apikey: $SUPABASE_PUBLISHABLE_KEY"
 ```
 
 ## Manual Cleanup

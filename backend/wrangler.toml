@@ -6,6 +6,11 @@ compatibility_flags = ["python_workers"]
 [build]
 command = "poetry export -f requirements.txt --output requirements.txt --without-hashes"
 
+# Workers Static Assets configuration for serving frontend static files
+[assets]
+directory = "./static"
+binding = "ASSETS"
+
 [vars]
 ENVIRONMENT = "production"
 LOG_LEVEL = "INFO"
@@ -45,5 +50,5 @@ enabled = true
 # wrangler secret put REDDIT_CLIENT_SECRET
 # wrangler secret put EVENTBRITE_TOKEN
 # wrangler secret put SUPABASE_URL
-# wrangler secret put SUPABASE_ANON_KEY
-# wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+# wrangler secret put SUPABASE_PUBLISHABLE_KEY
+# wrangler secret put SUPABASE_SECRET_KEY

@@ -289,7 +289,7 @@ $$ LANGUAGE plpgsql;
 // backend/src/routes/admin.js
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY);
 
 // POST /api/admin/cleanup
 export const runCleanup = async (req, res) => {
@@ -417,13 +417,13 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 Deno.serve(async (req) => {
   // Verify this is from Supabase cron
   const authHeader = req.headers.get('Authorization');
-  if (authHeader !== `Bearer ${Deno.env.get('SUPABASE_ANON_KEY')}`) {
+  if (authHeader !== `Bearer ${Deno.env.get('SUPABASE_PUBLISHABLE_KEY')}`) {
     return new Response('Unauthorized', { status: 401 });
   }
 
   const supabase = createClient(
     Deno.env.get('SUPABASE_URL') ?? '',
-    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+    Deno.env.get('SUPABASE_SECRET_KEY') ?? '',
   );
 
   try {
