@@ -40,9 +40,8 @@ ALTER TABLE places_embeddings ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "places_embeddings_select_policy" ON places_embeddings
   FOR SELECT USING (true);
 
--- Restrict writes to service role only
-CREATE POLICY "places_embeddings_insert_policy" ON places_embeddings
-  FOR INSERT WITH CHECK (false);
+-- Allow only service_role to insert embeddings
+-- No explicit policy = only service_role can write (since RLS is enabled)
 
 -- Prevent metadata bloat
 ALTER TABLE places_embeddings 
