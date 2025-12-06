@@ -286,8 +286,8 @@ EVENTBRITE_TOKEN=...
 
 # Supabase
 SUPABASE_URL=https://...
-SUPABASE_ANON_KEY=...
-SUPABASE_SERVICE_ROLE_KEY=...
+SUPABASE_PUBLISHABLE_KEY=...
+SUPABASE_SECRET_KEY=...
 
 # Application
 ENVIRONMENT=development
@@ -307,8 +307,8 @@ wrangler secret put REDDIT_CLIENT_ID
 wrangler secret put REDDIT_CLIENT_SECRET
 wrangler secret put EVENTBRITE_TOKEN
 wrangler secret put SUPABASE_URL
-wrangler secret put SUPABASE_ANON_KEY
-wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+wrangler secret put SUPABASE_PUBLISHABLE_KEY
+wrangler secret put SUPABASE_SECRET_KEY
 ```
 
 ## 🌐 API Endpoints

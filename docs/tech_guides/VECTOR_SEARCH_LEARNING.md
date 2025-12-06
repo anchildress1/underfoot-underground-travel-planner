@@ -243,7 +243,7 @@ export async function onRequestPost(context) {
   const { request, env } = context;
   const { interactions } = await request.json();
 
-  const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SECRET_KEY);
 
   try {
     // Process each interaction
@@ -579,7 +579,7 @@ ORDER BY date DESC;
 // functions/api/learning/analytics.js
 export async function onRequestGet(context) {
   const { env } = context;
-  const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SECRET_KEY);
 
   const { data: analytics } = await supabase.from('learning_analytics').select('*').limit(30); // Last 30 days
 

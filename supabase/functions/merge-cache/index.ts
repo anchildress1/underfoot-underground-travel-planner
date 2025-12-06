@@ -1,7 +1,7 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';
-const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
+const supabaseKey = Deno.env.get('SUPABASE_SECRET_KEY') || '';
 
 Deno.serve(async (req: Request): Promise<Response> => {
   if (req.method !== 'POST') {

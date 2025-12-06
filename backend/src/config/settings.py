@@ -18,8 +18,8 @@ class Settings(BaseSettings):
     eventbrite_token: str
 
     supabase_url: str
-    supabase_anon_key: str
-    supabase_service_role_key: str | None = None
+    supabase_publishable_key: str
+    supabase_secret_key: str | None = None
 
 
 @lru_cache(maxsize=1)
