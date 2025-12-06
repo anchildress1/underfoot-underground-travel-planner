@@ -78,8 +78,8 @@ Security and cache best practices for Supabase integration.
 When deploying (local or cloud):
 
 - `SUPABASE_URL` - Database endpoint
-- `SUPABASE_ANON_KEY` - Public access (restricted by RLS)
-- `SUPABASE_SERVICE_ROLE_KEY` - Admin access (backend only, never expose)
+- `SUPABASE_PUBLISHABLE_KEY` - Public access (restricted by RLS)
+- `SUPABASE_SECRET_KEY` - Admin access (backend only, never expose)
 
 ## Testing Checklist
 

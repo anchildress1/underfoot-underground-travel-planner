@@ -20,7 +20,7 @@ def get_supabase_client() -> Client:
         Supabase client instance
     """
     settings = get_settings()
-    return create_client(settings.supabase_url, settings.supabase_service_role_key or "")
+    return create_client(settings.supabase_url, settings.supabase_secret_key or "")
 
 
 class SupabaseService:
