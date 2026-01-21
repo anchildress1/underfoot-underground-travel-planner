@@ -73,7 +73,7 @@
     "remark-frontmatter": "^5.0.0",
     "remark-gfm": "^4.0.1",
     "uninstall": "^0.0.0",
-    "wrangler": "^4.34.0"
+    "wrangler": "^4.59.1"
   },
   "dependencies": {
     "vite": "^7.1.12"
