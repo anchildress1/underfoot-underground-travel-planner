@@ -18,9 +18,20 @@ def get_supabase_client() -> Client:
 
     Returns:
         Supabase client instance
+
+    Raises:
+        ValueError: If neither supabase_key nor supabase_secret_key is set
     """
     settings = get_settings()
-    return create_client(settings.supabase_url, settings.supabase_secret_key or "")
+    api_key = settings.supabase_key or settings.supabase_secret_key or ""
+
+    if not api_key:
+        raise ValueError(
+            "Missing SUPABASE_KEY or SUPABASE_SECRET_KEY in .env. "
+            "See supabase/DEPLOYMENT_CHECKLIST.md for setup."
+        )
+
+    return create_client(settings.supabase_url, api_key)
 
 
 class SupabaseService:
@@ -72,7 +83,7 @@ class SupabaseService:
                 "expires_at": expires_at.isoformat(),
             }
 
-            _response = self.client.table("search_results").upsert(data).execute()
+            _response = self.client.table("app_cache.search_results").upsert(data).execute()
 
             logger.info(
                 "supabase.cache_stored",
@@ -98,7 +109,7 @@ class SupabaseService:
         """
         try:
             response = (
-                self.client.table("search_results")
+                self.client.table("app_cache.search_results")
                 .select("*")
                 .eq("query_hash", query_hash)
                 .gt("expires_at", datetime.now(UTC).isoformat())
@@ -147,7 +158,7 @@ class SupabaseService:
                 "expires_at": expires_at.isoformat(),
             }
 
-            _response = self.client.table("location_cache").upsert(data).execute()
+            _response = self.client.table("app_cache.location_cache").upsert(data).execute()
 
             logger.info(
                 "supabase.location_stored",
@@ -173,7 +184,7 @@ class SupabaseService:
         """
         try:
             response = (
-                self.client.table("location_cache")
+                self.client.table("app_cache.location_cache")
                 .select("*")
                 .eq("raw_input", raw_input)
                 .gt("expires_at", datetime.now(UTC).isoformat())
@@ -199,11 +210,17 @@ class SupabaseService:
         """
         try:
             search_count = len(
-                self.client.table("search_results").select("id", count="exact").execute().data
+                self.client.table("app_cache.search_results")
+                .select("id", count="exact")
+                .execute()
+                .data
             )
 
             location_count = len(
-                self.client.table("location_cache").select("id", count="exact").execute().data
+                self.client.table("app_cache.location_cache")
+                .select("id", count="exact")
+                .execute()
+                .data
             )
 
             return {

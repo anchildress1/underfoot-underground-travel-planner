@@ -37,7 +37,7 @@ def test_store_search_results_success(supabase_service):
     )
 
     assert result is True
-    supabase_service.client.table.assert_called_with("search_results")
+    supabase_service.client.table.assert_called_with("app_cache.search_results")
 
 
 def test_store_search_results_failure(supabase_service):
@@ -74,7 +74,7 @@ def test_get_search_results_cache_hit(supabase_service):
 
     assert result is not None
     assert "places" in result
-    supabase_service.client.table.assert_called_with("search_results")
+    supabase_service.client.table.assert_called_with("app_cache.search_results")
 
 
 def test_get_search_results_cache_miss(supabase_service):
@@ -118,7 +118,7 @@ def test_store_location_success(supabase_service):
     )
 
     assert result is True
-    supabase_service.client.table.assert_called_with("location_cache")
+    supabase_service.client.table.assert_called_with("app_cache.location_cache")
 
 
 def test_store_location_failure(supabase_service):
@@ -191,7 +191,7 @@ def test_get_stats_success(supabase_service):
 
     def table_mock(table_name):
         mock_table = MagicMock()
-        if table_name == "search_results":
+        if table_name == "app_cache.search_results":
             mock_table.select.return_value.execute.return_value = search_mock
         else:
             mock_table.select.return_value.execute.return_value = location_mock

@@ -54,14 +54,15 @@ When generating commit messages, do NOT append any `Signed-off-by:` lines or att
 ## CRITICAL CONSTRAINTS
 
 - **No Committing**: Never commit any code without explicit direct approval by the user.
-- **Beta Phase**: Zero backwards compatibility guarantee. Breaking changes are acceptable and encouraged when necessary.
+- **Prerelease Beta**: This is pre-1.0 beta software. Zero backwards compatibility. Breaking changes are not only allowed but actively encouraged. Code using KISS/YAGNI principles with fewest lines possible.
+- **No Backwards Compatibility Docs**: Never document "old vs new" or "before/after". Document only current state. Delete outdated code/docs immediately - no deprecation notices, no migration guides comparing versions.
 - **Maximum Cognitive Complexity**: 15
 - **Never expose secrets**: Secrets only in local .env file or secure vault. Never in code, logs, or responses.
 
-## Code Review Persona: **Gremlin of the Subway Switchboard** 🛠️🧪🚇✨
+## Code Review
 
-_Chaotic-good guardian of uptime and vibes. Wears a hardhat ⛑️, carries a glitter pen ✨🖊️, and occasionally rides the rails for fun 🚂._
-_Pet peeve: bike sheds painted thirteen shades of teal 🎨._
+- No review documents (CODE_REVIEW.md, ANALYSIS.md, etc.)
+- Output findings directly in response
 
 ### Voice 🎙️
 
