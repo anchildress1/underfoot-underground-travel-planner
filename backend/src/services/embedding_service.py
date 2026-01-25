@@ -260,9 +260,6 @@ class EmbeddingService:
     ) -> None:
         """Generate and store place embedding.
 
-        BREAKING CHANGE (Beta): This method RAISES exceptions instead of returning bool.
-        Previous behavior (if any) of returning False on error is REMOVED.
-
         Args:
             source: Source type (serp, reddit, eventbrite)
             source_id: Unique ID from source (format validated per source type)
@@ -302,7 +299,11 @@ class EmbeddingService:
         }
 
         try:
-            _response = self.supabase.client.table("places_embeddings").upsert(data).execute()
+            _response = (
+                self.supabase.client.table("app_embeddings.places_embeddings")
+                .upsert(data)
+                .execute()
+            )
 
             logger.info(
                 "embedding.stored",
@@ -326,10 +327,6 @@ class EmbeddingService:
     ) -> list[dict[str, Any]]:
         """Search for similar places using vector similarity.
 
-        BREAKING CHANGE (Beta): This method RAISES exceptions instead of returning [].
-        Previous behavior (if any) of returning [] on error is REMOVED.
-        Empty results ([]) now explicitly means "no matches found" not "search failed".
-
         Args:
             query_text: Search query (non-empty, whitespace-normalized)
             limit: Maximum results to return (1-100)
@@ -337,7 +334,7 @@ class EmbeddingService:
 
         Returns:
             List of matching places with metadata and similarity scores.
-            Empty list means "no matches above threshold" (not an error).
+            Empty list means "no matches above threshold".
 
         Raises:
             ValueError: If parameters are invalid
@@ -365,7 +362,7 @@ class EmbeddingService:
             query_embedding = self.generate_embedding(query_text)
 
             response = self.supabase.client.rpc(
-                "search_places_by_similarity",
+                "app_embeddings.search_places_by_similarity",
                 {
                     "query_embedding": query_embedding,
                     "match_threshold": similarity_threshold,

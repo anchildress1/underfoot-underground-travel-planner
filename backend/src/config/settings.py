@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     supabase_url: str
     supabase_publishable_key: str
     supabase_secret_key: str | None = None
+    supabase_key: str | None = None  # app_admin_user password for TimescaleDB + application roles
 
 
 @lru_cache(maxsize=1)

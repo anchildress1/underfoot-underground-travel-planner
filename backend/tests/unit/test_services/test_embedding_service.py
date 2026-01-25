@@ -62,7 +62,7 @@ def test_pgvector_validation_lazy(embedding_service):
 def test_pgvector_validation_failure(embedding_service):
     """Test initialization fails when pgvector is unavailable."""
     embedding_service.supabase.client.rpc.return_value.execute.side_effect = Exception(
-        "function search_places_by_similarity does not exist"
+        "function app_embeddings.search_places_by_similarity does not exist"
     )
 
     with pytest.raises(EmbeddingError, match="pgvector extension"):
@@ -288,7 +288,7 @@ def test_store_place_embedding_success(embedding_service):
         source="serp", source_id="12345678", text="Secret Cave underground", metadata=metadata
     )
 
-    embedding_service.supabase.client.table.assert_called_with("places_embeddings")
+    embedding_service.supabase.client.table.assert_called_with("app_embeddings.places_embeddings")
 
 
 def test_store_place_embedding_invalid_source(embedding_service):
@@ -397,7 +397,7 @@ def test_similarity_search_success(embedding_service):
     assert len(results) == 1
     assert results[0]["similarity"] == 0.95
     embedding_service.supabase.client.rpc.assert_called_with(
-        "search_places_by_similarity",
+        "app_embeddings.search_places_by_similarity",
         {"query_embedding": [0.1] * 1536, "match_threshold": 0.7, "match_count": 10},
     )
 

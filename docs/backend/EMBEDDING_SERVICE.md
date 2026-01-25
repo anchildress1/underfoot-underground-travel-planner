@@ -1,8 +1,6 @@
 # Embedding Service - Semantic Search with pgvector
 
-> **⚠️ BETA PROJECT - NO BACKWARDS COMPATIBILITY**  
 > This service is under active development with breaking changes expected.  
-> See module docstring and AGENTS.md for project philosophy.
 
 ## Overview
 
@@ -195,8 +193,8 @@ WITH (lists = 100);
 
 ### RLS Policies
 
-- **SELECT**: Public access (anonymous read for search queries)
-- **INSERT**: Service role only (no explicit policy = only service_role can write)
+- **SELECT**: Application roles (app_readonly, app_readwrite, app_admin)
+- **INSERT**: app_admin role only with schema-qualified tables
 
 ## Performance Notes
 
