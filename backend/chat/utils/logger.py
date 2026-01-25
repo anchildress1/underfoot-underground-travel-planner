@@ -5,7 +5,7 @@ from typing import Any
 
 import structlog
 
-from src.config.constants import SENSITIVE_KEYS
+from chat.config.constants import SENSITIVE_KEYS
 
 
 def redact_secrets(data: dict[str, Any]) -> dict[str, Any]:

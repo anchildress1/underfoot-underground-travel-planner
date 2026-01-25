@@ -3,7 +3,7 @@
 import re
 from typing import Any
 
-from src.utils.errors import UnderfootError
+from chat.utils.errors import UnderfootError
 
 
 class InputValidator:

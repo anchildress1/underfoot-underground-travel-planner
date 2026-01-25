@@ -22,7 +22,7 @@ help:
 dev: dev-frontend
 
 dev-backend:
-	cd backend && poetry run uvicorn src.workers.chat_worker:app --reload --port 8000
+	cd backend && poetry run python manage.py runserver
 
 dev-frontend:
 	npm run -w frontend dev
@@ -49,8 +49,8 @@ install-frontend:
 format: format-backend format-frontend
 
 format-backend:
-	cd backend && poetry run black src tests
-	cd backend && poetry run ruff format src tests
+	cd backend && poetry run black chat underfoot manage.py tests
+	cd backend && poetry run ruff format chat underfoot manage.py tests
 
 format-frontend:
 	npm run format
@@ -59,7 +59,7 @@ format-frontend:
 lint: lint-backend lint-frontend
 
 lint-backend:
-	cd backend && poetry run ruff check src tests
+	cd backend && poetry run ruff check chat underfoot manage.py tests
 
 lint-frontend:
 	npm run -w frontend lint
@@ -77,7 +77,7 @@ test-frontend:
 typecheck: typecheck-backend typecheck-frontend
 
 typecheck-backend:
-	cd backend && poetry run mypy src
+	cd backend && poetry run mypy chat underfoot manage.py
 
 typecheck-frontend:
 	npm --prefix frontend run typecheck

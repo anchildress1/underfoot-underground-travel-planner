@@ -6,8 +6,8 @@ from dataclasses import asdict
 from typing import Any
 from uuid import uuid4
 
-from src.models.domain_models import SearchContext
-from src.services import (
+from chat.schemas import SearchContext
+from chat.services import (
     cache_service,
     eventbrite_service,
     geocoding_service,
@@ -16,7 +16,7 @@ from src.services import (
     scoring_service,
     serp_service,
 )
-from src.utils.logger import get_logger
+from chat.utils.logger import get_logger
 
 logger = get_logger(__name__)
 

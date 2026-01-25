@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from src.services.embedding_service import EmbeddingError, EmbeddingService
+from chat.services.embedding_service import EmbeddingError, EmbeddingService
 
 
 @pytest.fixture
@@ -13,8 +13,8 @@ def embedding_service():
     EmbeddingService._instance = None
 
     with (
-        patch("src.services.embedding_service.get_openai_client") as mock_openai,
-        patch("src.services.embedding_service.SupabaseService") as mock_supabase_cls,
+        patch("chat.services.embedding_service.get_openai_client") as mock_openai,
+        patch("chat.services.embedding_service.SupabaseService") as mock_supabase_cls,
     ):
         mock_supabase = MagicMock()
         mock_supabase.client.rpc.return_value.execute.return_value = MagicMock(data=[])

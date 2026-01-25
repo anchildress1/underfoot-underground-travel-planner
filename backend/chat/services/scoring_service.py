@@ -1,7 +1,7 @@
 """Scoring and ranking service for search results."""
 
-from src.models.domain_models import CategorizedResults, ScoringSummary, SearchResult
-from src.utils.logger import get_logger
+from chat.schemas import CategorizedResults, ScoringSummary, SearchResult
+from chat.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
