@@ -95,10 +95,7 @@ class InputSanitizer:
         if excessive_special_chars > 10:
             return True
 
-        if text.count("\n") > 20:
-            return True
-
-        return False
+        return text.count("\n") > 20
 
 
 class IntentParser:

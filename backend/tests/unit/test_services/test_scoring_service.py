@@ -1,6 +1,5 @@
 """Unit tests for scoring service."""
 
-
 from chat.schemas import SearchResult
 from chat.services import scoring_service
 

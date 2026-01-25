@@ -1,6 +1,7 @@
 """
 Django Ninja Schemas (Ported from src/models)
 """
+
 from typing import Any
 
 from ninja import Field, Schema
