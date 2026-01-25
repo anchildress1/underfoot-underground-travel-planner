@@ -61,7 +61,7 @@ jobs:
       - name: Run tests with coverage
         working-directory: ./backend
         run: |
-          poetry run pytest --cov=src --cov-report=xml --cov-report=term-missing
+          poetry run pytest --cov=chat --cov=underfoot --cov=manage.py --cov-report=xml --cov-report=term-missing
 
       # codecov-action@v5: Explicit token required (env var deprecated)
       # https://github.com/codecov/codecov-action/releases/tag/v5.0.0
@@ -88,7 +88,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Install Poetry
         run: |
@@ -103,17 +103,17 @@ jobs:
       - name: Run Ruff linting
         working-directory: ./backend
         run: |
-          poetry run ruff check .
+          poetry run ruff check chat underfoot manage.py tests
 
       - name: Run Black formatting check
         working-directory: ./backend
         run: |
-          poetry run black --check .
+          poetry run black --check chat underfoot manage.py tests
 
       - name: Run MyPy type checking
         working-directory: ./backend
         run: |
-          poetry run mypy src/
+          poetry run mypy chat underfoot manage.py
 
   security:
     runs-on: ubuntu-latest
@@ -128,7 +128,12 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: '3.11'
+          python-version: '3.12'
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Install security tools
         run: |
@@ -143,8 +148,8 @@ jobs:
       - name: Run Bandit security scan
         working-directory: ./backend
         run: |
-          bandit -r src/ -f json -o bandit-report.json || true
-          bandit -r src/
+          bandit -r chat/ underfoot/ manage.py -f json -o bandit-report.json || true
+          bandit -r chat/ underfoot/ manage.py
 
       - name: Upload Bandit report
         uses: actions/upload-artifact@v5
@@ -174,7 +179,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Install Poetry
         run: |

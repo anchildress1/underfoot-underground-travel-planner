@@ -1,4 +1,4 @@
-.PHONY: help dev dev-backend dev-frontend build build-backend build-frontend
+.PHONY: help dev dev-backend dev-frontend build build-backend build-frontend ai-checks
 .PHONY: install install-backend install-frontend
 .PHONY: format format-backend format-frontend
 .PHONY: lint lint-backend lint-frontend
@@ -17,6 +17,10 @@ help:
 	@echo "  make test             - Run all tests"
 	@echo "  make typecheck        - Type check all code"
 	@echo "  make clean            - Clean build artifacts"
+	@echo "  make ai-checks        - Run all checks (format, lint, test)"
+
+ai-checks: test
+
 
 # Development
 dev: dev-frontend
