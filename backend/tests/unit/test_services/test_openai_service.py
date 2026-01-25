@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from src.services import openai_service
+from chat.services import openai_service
 
 
 @pytest.mark.asyncio

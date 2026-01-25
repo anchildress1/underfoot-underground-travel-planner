@@ -4,7 +4,7 @@ from datetime import datetime
 
 import pytest
 
-from src.models.response_models import (
+from chat.schemas import (
     DebugInfo,
     ErrorResponse,
     HealthResponse,

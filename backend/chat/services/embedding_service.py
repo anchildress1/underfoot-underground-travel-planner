@@ -18,10 +18,10 @@ from typing import Any
 
 from openai import OpenAI
 
-from src.config.settings import get_settings
-from src.services.supabase_service import SupabaseService
-from src.utils.errors import UnderfootError
-from src.utils.logger import get_logger
+from chat.config.settings import get_settings
+from chat.services.supabase_service import SupabaseService
+from chat.utils.errors import UnderfootError
+from chat.utils.logger import get_logger
 
 logger = get_logger(__name__)
 

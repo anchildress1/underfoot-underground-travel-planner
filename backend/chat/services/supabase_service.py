@@ -6,8 +6,8 @@ from typing import Any, cast
 
 from supabase import Client, create_client
 
-from src.config.settings import get_settings
-from src.utils.logger import get_logger
+from chat.config.settings import get_settings
+from chat.utils.logger import get_logger
 
 logger = get_logger(__name__)
 

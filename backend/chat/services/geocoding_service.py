@@ -2,10 +2,10 @@
 
 import httpx
 
-from src.config.constants import HTTP_CONNECT_TIMEOUT_SECONDS, HTTP_TIMEOUT_SECONDS
-from src.config.settings import get_settings
-from src.models.domain_models import NormalizedLocation
-from src.utils.logger import get_logger
+from chat.config.constants import HTTP_CONNECT_TIMEOUT_SECONDS, HTTP_TIMEOUT_SECONDS
+from chat.config.settings import get_settings
+from chat.schemas import NormalizedLocation
+from chat.utils.logger import get_logger
 
 logger = get_logger(__name__)
 settings = get_settings()

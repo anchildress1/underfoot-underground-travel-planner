@@ -5,16 +5,16 @@ from typing import Any
 
 from openai import AsyncOpenAI
 
-from src.config.constants import (
+from chat.config.constants import (
     INTENT_KEYWORDS,
     OPENAI_MAX_TOKENS_PARSE,
     OPENAI_MAX_TOKENS_RESPONSE,
     OPENAI_MODEL,
     OPENAI_TEMPERATURE,
 )
-from src.config.settings import get_settings
-from src.models.domain_models import ParsedInput
-from src.utils.logger import get_logger
+from chat.config.settings import get_settings
+from chat.schemas import ParsedInput
+from chat.utils.logger import get_logger
 
 logger = get_logger(__name__)
 settings = get_settings()

@@ -4,9 +4,9 @@ import hashlib
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
-from src.config.constants import LOCATION_CACHE_TTL_HOURS, SUPABASE_CACHE_TTL_MINUTES
-from src.services.supabase_service import supabase
-from src.utils.logger import get_logger
+from chat.config.constants import LOCATION_CACHE_TTL_HOURS, SUPABASE_CACHE_TTL_MINUTES
+from chat.services.supabase_service import supabase
+from chat.utils.logger import get_logger
 
 logger = get_logger(__name__)
 

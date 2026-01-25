@@ -1,6 +1,6 @@
 """Tests for logger utilities."""
 
-from src.utils.logger import get_logger, redact_secrets, setup_logging
+from chat.utils.logger import get_logger, redact_secrets, setup_logging
 
 
 def test_get_logger():

@@ -1,6 +1,6 @@
 """Tests for custom error classes."""
 
-from src.utils.errors import (
+from chat.utils.errors import (
     CacheError,
     RateLimitError,
     UnderfootError,

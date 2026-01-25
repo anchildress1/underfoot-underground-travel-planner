@@ -4,7 +4,7 @@ import time
 from collections import defaultdict
 from dataclasses import dataclass
 
-from src.utils.logger import get_logger
+from chat.utils.logger import get_logger
 
 logger = get_logger(__name__)
 

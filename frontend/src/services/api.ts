@@ -30,7 +30,7 @@ export interface HealthResponse {
  * Send chat message to backend
  */
 export async function sendChatMessage(message: string, force = false): Promise<SearchResponse> {
-  const response = await fetch(`${API_BASE}/underfoot/search`, {
+  const response = await fetch(`${API_BASE}/api/underfoot/search`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ export async function sendChatMessage(message: string, force = false): Promise<S
  * Check backend health
  */
 export async function checkHealth(): Promise<HealthResponse> {
-  const response = await fetch(`${API_BASE}/health`);
+  const response = await fetch(`${API_BASE}/api/underfoot/health`);
 
   if (!response.ok) {
     throw new Error('Health check failed');
