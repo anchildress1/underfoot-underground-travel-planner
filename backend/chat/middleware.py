@@ -20,7 +20,7 @@ class RequestTracingMiddleware:
         request_id_var.set(request_id)
 
         # Attach to request for convenience
-        request.request_id = request_id
+        request.request_id = request_id  # type: ignore[attr-defined]
 
         start = time.perf_counter()
 

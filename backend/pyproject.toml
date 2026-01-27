@@ -34,6 +34,7 @@ dev = [
     "black>=23.11.0",
     "types-bleach>=6.3.0.20251029",
     "pytest-django>=4.7.0",
+    "django-stubs>=5.2.9",
 ]
 
 [tool.pytest.ini_options]

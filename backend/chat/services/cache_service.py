@@ -111,9 +111,9 @@ async def get_cached_location(raw_input: str) -> dict[str, Any] | None:
         if result.data:
             logger.info("cache.hit", cache_type="location", raw_input=raw_input[:50])
             return {
-                "normalized": result.data["normalized_location"],
-                "confidence": result.data["confidence"],
-                "coordinates": result.data.get("raw_candidates", []),
+                "normalized": result.data["normalized_location"],  # type: ignore[index,call-overload]
+                "confidence": result.data["confidence"],  # type: ignore[index,call-overload]
+                "coordinates": result.data.get("raw_candidates", []),  # type: ignore[union-attr]
             }
 
         return None

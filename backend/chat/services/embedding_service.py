@@ -299,7 +299,7 @@ class EmbeddingService:
         }
 
         try:
-            self.supabase.client.table("app_embeddings.places_embeddings").upsert(data).execute()
+            self.supabase.client.table("app_embeddings.places_embeddings").upsert(data).execute()  # type: ignore[arg-type]
 
             logger.info(
                 "embedding.stored",
@@ -371,11 +371,11 @@ class EmbeddingService:
             logger.info(
                 "embedding.search",
                 query_length=len(query_text),
-                results_count=len(results),
+                results_count=len(results),  # type: ignore[arg-type]
                 threshold=similarity_threshold,
             )
 
-            return results
+            return results  # type: ignore[return-value]
 
         except ValueError:
             raise

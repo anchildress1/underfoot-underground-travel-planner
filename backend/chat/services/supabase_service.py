@@ -83,7 +83,7 @@ class SupabaseService:
                 "expires_at": expires_at.isoformat(),
             }
 
-            self.client.table("app_cache.search_results").upsert(data).execute()
+            self.client.table("app_cache.search_results").upsert(data).execute()  # type: ignore[arg-type]
 
             logger.info(
                 "supabase.cache_stored",
@@ -118,7 +118,7 @@ class SupabaseService:
 
             if response.data and len(response.data) > 0:
                 logger.info("supabase.cache_hit", query_hash=query_hash)
-                return cast(dict, response.data[0]["results_json"])
+                return cast(dict, response.data[0]["results_json"])  # type: ignore[index,call-overload]
 
             logger.info("supabase.cache_miss", query_hash=query_hash)
             return None
@@ -158,7 +158,7 @@ class SupabaseService:
                 "expires_at": expires_at.isoformat(),
             }
 
-            self.client.table("app_cache.location_cache").upsert(data).execute()
+            self.client.table("app_cache.location_cache").upsert(data).execute()  # type: ignore[arg-type]
 
             logger.info(
                 "supabase.location_stored",
@@ -211,14 +211,14 @@ class SupabaseService:
         try:
             search_count = len(
                 self.client.table("app_cache.search_results")
-                .select("id", count="exact")
+                .select("id", count="exact")  # type: ignore[arg-type]
                 .execute()
                 .data
             )
 
             location_count = len(
                 self.client.table("app_cache.location_cache")
-                .select("id", count="exact")
+                .select("id", count="exact")  # type: ignore[arg-type]
                 .execute()
                 .data
             )
