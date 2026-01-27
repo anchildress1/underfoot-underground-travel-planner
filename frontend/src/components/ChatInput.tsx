@@ -78,7 +78,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             'disabled:hover:from-cyber-500 disabled:hover:to-neon-500',
           )}
           aria-label="Send message"
-          aria-busy={isLoading}
         >
           <Send className="w-5 h-5" />
         </motion.button>
