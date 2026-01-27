@@ -19,6 +19,7 @@ test.describe('Error Handling E2E', () => {
   });
 
   test('should handle API timeout', async ({ page, context }) => {
+    test.setTimeout(45000);
     await context.route('**/underfoot/search', async (route) => {
       await new Promise((resolve) => setTimeout(resolve, 30000));
       route.fulfill({

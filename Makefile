@@ -26,7 +26,7 @@ ai-checks: test
 dev: dev-frontend
 
 dev-backend:
-	cd backend && poetry run python manage.py runserver
+	cd backend && uv run python manage.py runserver
 
 dev-frontend:
 	npm run -w frontend dev
@@ -35,7 +35,7 @@ dev-frontend:
 build: build-frontend
 
 build-backend:
-	cd backend && poetry build
+	cd backend && uv build
 
 build-frontend:
 	npm run -w frontend build
@@ -44,7 +44,7 @@ build-frontend:
 install: install-backend install-frontend
 
 install-backend:
-	cd backend && poetry install
+	cd backend && uv sync
 
 install-frontend:
 	npm install
@@ -53,8 +53,8 @@ install-frontend:
 format: format-backend format-frontend
 
 format-backend:
-	cd backend && poetry run black chat underfoot manage.py tests
-	cd backend && poetry run ruff format chat underfoot manage.py tests
+	cd backend && uv run black chat underfoot manage.py tests
+	cd backend && uv run ruff format chat underfoot manage.py tests
 
 format-frontend:
 	npm run format
@@ -63,7 +63,7 @@ format-frontend:
 lint: lint-backend lint-frontend
 
 lint-backend:
-	cd backend && poetry run ruff check chat underfoot manage.py tests
+	cd backend && uv run ruff check chat underfoot manage.py tests
 
 lint-frontend:
 	npm run -w frontend lint
@@ -72,7 +72,7 @@ lint-frontend:
 test: format lint test-backend test-frontend
 
 test-backend:
-	cd backend && poetry run pytest
+	cd backend && uv run pytest
 
 test-frontend:
 	npm --prefix frontend test
@@ -81,7 +81,7 @@ test-frontend:
 typecheck: typecheck-backend typecheck-frontend
 
 typecheck-backend:
-	cd backend && poetry run mypy chat underfoot manage.py
+	cd backend && uv run mypy chat underfoot manage.py
 
 typecheck-frontend:
 	npm --prefix frontend run typecheck
@@ -92,6 +92,7 @@ clean: clean-backend clean-frontend
 clean-backend:
 	cd backend && rm -rf .pytest_cache htmlcov .coverage .ruff_cache
 	cd backend && find . -type d -name __pycache__ -exec rm -rf {} +
+	cd backend && rm -rf dist
 
 clean-frontend:
 	cd frontend && rm -rf node_modules dist coverage playwright-report test-results

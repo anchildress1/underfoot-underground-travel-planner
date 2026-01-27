@@ -31,37 +31,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "backend/uv.lock"
+
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ matrix.python-version }}
-          cache: 'pip'
-
-      # Cache Poetry dependencies to speed up builds
-      - name: Cache Poetry virtualenv
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/pypoetry
-            backend/.venv
-          key: poetry-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('backend/poetry.lock') }}
-          restore-keys: |
-            poetry-${{ runner.os }}-${{ matrix.python-version }}-
-
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+        run: uv python install ${{ matrix.python-version }}
 
       - name: Install dependencies
         working-directory: ./backend
         run: |
-          poetry install
+          uv sync --all-extras --dev
 
       - name: Run tests with coverage
         working-directory: ./backend
         run: |
-          poetry run pytest --cov=chat --cov=underfoot --cov=manage.py --cov-report=xml --cov-report=term-missing
+          uv run pytest --cov=chat --cov=underfoot --cov=manage.py --cov-report=xml --cov-report=term-missing
 
       # codecov-action@v5: Explicit token required (env var deprecated)
       # https://github.com/codecov/codecov-action/releases/tag/v5.0.0
@@ -85,35 +72,34 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          python-version: '3.12'
+          enable-cache: true
+          cache-dependency-glob: "backend/uv.lock"
 
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Set up Python
+        run: uv python install 3.12
 
       - name: Install dependencies
         working-directory: ./backend
         run: |
-          poetry install
+          uv sync --all-extras --dev
 
       - name: Run Ruff linting
         working-directory: ./backend
         run: |
-          poetry run ruff check chat underfoot manage.py tests
+          uv run ruff check chat underfoot manage.py tests
 
       - name: Run Black formatting check
         working-directory: ./backend
         run: |
-          poetry run black --check chat underfoot manage.py tests
+          uv run black --check chat underfoot manage.py tests
 
       - name: Run MyPy type checking
         working-directory: ./backend
         run: |
-          poetry run mypy chat underfoot manage.py
+          uv run mypy chat underfoot manage.py
 
   security:
     runs-on: ubuntu-latest
@@ -125,24 +111,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          python-version: '3.12'
+          enable-cache: true
+          cache-dependency-glob: "backend/uv.lock"
 
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Set up Python
+        run: uv python install 3.12
 
       - name: Install security tools
         run: |
-          pip install safety bandit
+          uv tool install bandit
+          uv tool install safety
 
       - name: Run Safety check
         working-directory: ./backend
         run: |
-          poetry export -f requirements.txt --output requirements.txt --without-hashes
+          uv export --format requirements-txt --output-file requirements.txt --no-hashes
           safety check -r requirements.txt
 
       - name: Run Bandit security scan
@@ -174,22 +160,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      # Note: Each job runs in fresh environment - setup-python required per job
-      # Cannot reuse setup from test/lint jobs
-      - name: Set up Python
-        uses: actions/setup-python@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          python-version: '3.12'
+          enable-cache: true
+          cache-dependency-glob: "backend/uv.lock"
 
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Set up Python
+        run: uv python install 3.12
 
       - name: Export requirements
         working-directory: ./backend
         run: |
-          poetry export -f requirements.txt --output requirements.txt --without-hashes
+          uv export --format requirements-txt --output-file requirements.txt --no-hashes
 
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3

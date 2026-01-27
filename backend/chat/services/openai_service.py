@@ -155,7 +155,7 @@ Style: Mystical, wise, slightly mysterious, but practical and helpful.""",
 Found places:
 {places_text}
 
-Scoring summary: {summary.get('total_results', 0)} results, average score {summary.get('average_score', 0):.1f}/1.0
+Scoring summary: {summary.get("total_results", 0)} results, average score {summary.get("average_score", 0):.1f}/1.0
 
 Write a brief Stonewalker response.""",
                 },
