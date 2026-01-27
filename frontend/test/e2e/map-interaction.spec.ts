@@ -201,11 +201,11 @@ test.describe('Map Interaction E2E', () => {
 
     await input.fill('caves near grundy');
     await page.getByRole('button', { name: 'Send message' }).click();
-    await expect(page.getByText(/Grundy Cave/i)).toBeVisible({ timeout: 5000 });
+    await expect(page.getByText(/Grundy Cave/i).first()).toBeVisible({ timeout: 5000 });
 
     await input.fill('caves in virginia');
     await page.getByRole('button', { name: 'Send message' }).click();
-    await expect(page.getByText(/Virginia Cave/i)).toBeVisible({ timeout: 5000 });
+    await expect(page.getByText(/Virginia Cave/i).first()).toBeVisible({ timeout: 5000 });
 
     const map = page.getByRole('region', { name: /map/ });
     await expect(map).toBeVisible();

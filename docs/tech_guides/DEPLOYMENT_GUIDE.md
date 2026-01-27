@@ -162,7 +162,7 @@ export async function onRequestPost(context) {
     const response = await processChat(chatInput, {
       openaiKey: env.OPENAI_API_KEY,
       supabaseUrl: env.SUPABASE_URL,
-      supabaseKey: env.SUPABASE_SERVICE_ROLE_KEY,
+      supabaseKey: env.SUPABASE_SECRET_KEY,
       // ... other env vars
     });
 
@@ -251,8 +251,8 @@ Root directory: /
 # Environment variables (add in Pages dashboard):
 OPENAI_API_KEY=sk-...
 SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_ANON_KEY=eyJ...
-SUPABASE_SERVICE_ROLE_KEY=eyJ...
+SUPABASE_PUBLISHABLE_KEY=eyJ...
+SUPABASE_SECRET_KEY=eyJ...
 # ... add all your API keys
 ```
 
@@ -348,8 +348,8 @@ CLOUDFLARE_API_TOKEN=your_cloudflare_api_token
 CLOUDFLARE_ACCOUNT_ID=your_account_id
 OPENAI_API_KEY=sk-...
 SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_ANON_KEY=eyJ...
-SUPABASE_SERVICE_ROLE_KEY=eyJ...
+SUPABASE_PUBLISHABLE_KEY=eyJ...
+SUPABASE_SECRET_KEY=eyJ...
 ```
 
 ---
@@ -567,7 +567,7 @@ let supabaseClient;
 export async function onRequest(context) {
   // Initialize client once per function lifetime
   if (!supabaseClient) {
-    supabaseClient = createClient(context.env.SUPABASE_URL, context.env.SUPABASE_SERVICE_ROLE_KEY);
+    supabaseClient = createClient(context.env.SUPABASE_URL, context.env.SUPABASE_SECRET_KEY);
   }
 
   // Use connection pooling, cache frequently accessed data

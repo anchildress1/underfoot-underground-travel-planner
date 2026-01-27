@@ -4,6 +4,7 @@ export default {
   // Others are available, but this is the most widely used.
   // See: https://commitlint.js.org/reference/configuration.html#shareable-configuration
   extends: ['@commitlint/config-conventional'],
+  plugins: ['@checkmarkdevtools/commitlint-plugin-rai'],
 
   // Rule format: 'rule-name': [level, applicable, value]
   //   - Level: 0 = off, 1 = warning, 2 = error
@@ -70,6 +71,7 @@ export default {
     // human commits, but the assistant can produce a draft without the trailer for manual review.
     'signed-off-by': [1, 'always'],
     // 'trailer-exists': [1, 'always', 'Signed-off-by'],
+    'rai-footer-exists': [2, 'always'],
 
     // END of custom rules
   },

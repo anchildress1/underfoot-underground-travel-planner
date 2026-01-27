@@ -74,7 +74,7 @@ Start the backend with:
 
 ```bash
 cd backend
-poetry run uvicorn src.workers.chat_worker:app --reload
+uv run uvicorn src.workers.chat_worker:app --reload
 ```
 
 Logs will appear in the terminal with colored output.
@@ -82,7 +82,7 @@ Logs will appear in the terminal with colored output.
 Set log level via environment variable:
 
 ```bash
-LOG_LEVEL=DEBUG poetry run uvicorn src.workers.chat_worker:app --reload
+LOG_LEVEL=DEBUG uv run uvicorn src.workers.chat_worker:app --reload
 ```
 
 ### Frontend Logs

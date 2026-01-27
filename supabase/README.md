@@ -1,81 +1,85 @@
-# Supabase RLS Security - Fixed
+# Supabase Database
 
-## What Was Fixed
+**PostgreSQL + pgvector**
 
-### ✅ RLS Policies Secured
-- **DELETE operations**: Only `service_role` can delete (cache bombing prevented)
-- **READ operations**: Public can read non-expired cache
-- **WRITE operations**: Public can insert/update with validation
-- **TTL enforcement**: Max 7 days (search), 30 days (location)
+---
 
-### ✅ Cleanup Function
-- Deletes cache entries where ALL events have passed (checks `startDate` in JSON)
-- Run manually from backend: `supabase.rpc('clean_expired_cache').execute()`
+## Features
 
-### ✅ Anti-Spam Protection
-- Max 10k rows in `search_results` (auto-deletes oldest)
-- Max 5k rows in `location_cache` (auto-deletes oldest)
-- Max 1MB JSON payload size
+- **Application Schemas:** app_cache, app_embeddings, app_monitoring
+- **Application Roles:** app_readonly, app_readwrite, app_admin
+- **Vector Search:** pgvector with IVFFlat index (OpenAI ada-002)
+- **Monitoring:** Built-in health views
 
-## Files
+---
 
-```
-supabase/
-├── migrations/
-│   ├── 001_initial_schema.sql       # Tables + cleanup function
-│   ├── 002_rls_policies.sql         # Secure RLS (NO public delete)
-│   └── 003_security_monitoring.sql  # Anti-spam + monitoring
-├── functions/
-│   └── merge-cache/index.ts         # Edge function (fixed table names)
-├── AGENTS.md                         # Security best practices
-└── README.md                         # This file
-```
+## Deploy
 
-## Environment Variables
-
-Set in `.env`:
 ```bash
-SUPABASE_URL=https://uqvwaiexsgprdbdecoxx.supabase.co
-SUPABASE_ANON_KEY=<your-anon-key>
-SUPABASE_SERVICE_ROLE_KEY=<your-service-key>
-SUPABASE_ACCESS_TOKEN=<your-access-token>
+cd supabase
+supabase db reset
 ```
 
-## Deployment
+---
 
-**Option 1: Supabase Dashboard (Recommended)**
-1. Go to https://app.supabase.com/project/uqvwaiexsgprdbdecoxx/sql/new
-2. Run each migration file in order (001, 002, 003)
+## Documentation
 
-**Option 2: CLI**
+- **[migrations/README.md](migrations/README.md)** - Migration reference
+- **[AGENTS.md](AGENTS.md)** - AI agent guidelines
+
+---
+
+## Schema Overview
+
+### app_cache Schema
+- `search_results` - Query results cache (14-day TTL)
+- `location_cache` - Location normalization cache (60-day TTL)
+- `cleanup_expired()` - Function to delete expired entries
+
+### app_embeddings Schema
+- `places_embeddings` - pgvector table (1536 dimensions, IVFFlat index)
+- `search_places_by_similarity()` - Vector similarity search function
+
+### app_monitoring Schema
+- `cache_health` - Real-time cache statistics view
+- `embedding_health` - Embedding statistics by source view
+
+---
+
+## Application Roles
+
+| Role | Access | Use Case |
+|------|--------|----------|
+| `app_readonly` | SELECT on all tables | Dashboards, monitoring, analytics |
+| `app_readwrite` | SELECT/INSERT/UPDATE on cache | Application cache operations |
+| `app_admin` | ALL privileges | Embedding service, operations |
+
+---
+
+## Local Development
+
 ```bash
-export SUPABASE_ACCESS_TOKEN=<your-token>
-supabase login
-supabase link --project-ref uqvwaiexsgprdbdecoxx
-supabase db push
+# Start local Supabase
+supabase start
+
+# Reset and apply migrations
+supabase db reset
+
+# Get credentials
+supabase status
 ```
 
-## Verification
+---
 
-After deployment, test RLS:
-```bash
-# Should work (read)
-curl "https://uqvwaiexsgprdbdecoxx.supabase.co/rest/v1/search_results?limit=1" \
-  -H "apikey: $SUPABASE_ANON_KEY"
+## Verification Queries
 
-# Should FAIL (delete blocked by RLS)
-curl -X DELETE "https://uqvwaiexsgprdbdecoxx.supabase.co/rest/v1/search_results?id=eq.xxx" \
-  -H "apikey: $SUPABASE_ANON_KEY"
+```sql
+-- Check schemas created
+SELECT schema_name FROM information_schema.schemata WHERE schema_name LIKE 'app_%';
+
+-- Check tables
+SELECT schemaname, tablename FROM pg_tables WHERE schemaname IN ('app_cache', 'app_embeddings');
+
+-- Check monitoring views
+SELECT * FROM app_monitoring.cache_health;
 ```
-
-## Manual Cleanup
-
-Call from backend (Python):
-```python
-from supabase import create_client
-
-supabase = create_client(url, service_role_key)
-supabase.rpc('clean_expired_cache').execute()
-```
-
-Schedule this daily/weekly as needed.

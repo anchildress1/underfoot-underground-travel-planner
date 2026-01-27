@@ -75,8 +75,8 @@ wrangler secret put REDDIT_CLIENT_ID
 wrangler secret put REDDIT_CLIENT_SECRET
 wrangler secret put EVENTBRITE_TOKEN
 wrangler secret put SUPABASE_URL
-wrangler secret put SUPABASE_ANON_KEY
-wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+wrangler secret put SUPABASE_PUBLISHABLE_KEY
+wrangler secret put SUPABASE_SECRET_KEY
 ```
 
 These are separate from GitHub Actions secrets and are managed directly in CloudFlare.

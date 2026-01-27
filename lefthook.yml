@@ -1,13 +1,16 @@
 pre-commit:
   parallel: true
   commands:
+    audit-fix:
+      run: npm audit fix
+      stage_fixed: true
     backend-format:
       glob: "backend/**/*.py"
       stage_fixed: true
-      run: cd backend && poetry run black src tests && poetry run ruff check --fix src tests
+      run: cd backend && uv run black chat underfoot manage.py tests && uv run ruff check --fix chat underfoot manage.py tests
     backend-lint:
       glob: "backend/**/*.py"
-      run: cd backend && poetry run ruff check src tests && poetry run mypy src
+      run: cd backend && uv run ruff check chat underfoot manage.py tests && uv run mypy chat underfoot manage.py
     frontend-format:
       glob: "{frontend,docs}/**/*.{ts,tsx,js,jsx,json,md}"
       stage_fixed: true

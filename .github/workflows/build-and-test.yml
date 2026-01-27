@@ -1,21 +1,36 @@
 name: Build and Test
 
+# Artifact Retention Policy:
+# - Test artifacts (coverage, reports): 7 days - sufficient for PR review cycle
+# - Security artifacts: 30 days - compliance and audit requirements
+# Cache Requirements:
+# - Requires package-lock.json in root directory for npm cache to function
+# - setup-node@v6 automatically caches npm with 'cache: npm' parameter
+
 on:
-  push:
-    branches: [main]
   pull_request:
     types: [opened, synchronize, reopened]
+
+# Cancel in-progress runs when a new commit is pushed to the same PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Use Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '24'
+          cache: 'npm'
 
       - name: Install dependencies (workspaces)
         run: npm ci
@@ -34,12 +49,26 @@ jobs:
         working-directory: frontend
         run: npm run test
 
+      # upload-artifact@v5: Breaking change from v4 - hidden files excluded by default
+      # https://github.com/actions/upload-artifact/blob/main/docs/MIGRATION.md
+      # Coverage artifacts typically don't contain hidden files - exclusion acceptable
+      # If hidden files needed (e.g., .nyc_output/), add: include-hidden-files: true
       - name: Upload unit test coverage
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: coverage-frontend
           path: frontend/coverage
+          retention-days: 7
+          if-no-files-found: warn
+          compression-level: 6
+
+      # Cache Playwright browsers to speed up e2e tests
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('frontend/package-lock.json') }}
 
       - name: Install Playwright browsers
         working-directory: frontend
@@ -53,7 +82,10 @@ jobs:
 
       - name: Upload Playwright report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: playwright-report
           path: frontend/playwright-report
+          retention-days: 7
+          if-no-files-found: warn
+          compression-level: 6

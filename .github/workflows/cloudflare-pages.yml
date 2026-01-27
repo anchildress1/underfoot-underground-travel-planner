@@ -1,9 +1,21 @@
-name: deploy:cloudflare-pages
-# This has yet to be tested
+name: deploy:frontend-static-assets
+
+# Deploys frontend static assets to backend Worker via Workers Static Assets
+# This integrates with the Python backend Worker deployment
+# Cache Requirements:
+# - Requires package-lock.json in root directory for npm cache to function
+# - setup-node@v6 automatically caches npm with 'cache: npm' parameter
+
+# Required Secrets:
+# - CLOUDFLARE_API_TOKEN: API token from Cloudflare dashboard
+# - CLOUDFLARE_ACCOUNT_ID: Account ID from Cloudflare dashboard
 on:
-  # push:
-  #   branches: [main]
   workflow_dispatch: {}
+
+# Only one deployment at a time
+concurrency:
+  group: frontend-static-deploy
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -15,13 +27,13 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
-          cache: npm
+          node-version: '24'
+          cache: 'npm'
 
       - name: Install dependencies (root + frontend)
         run: npm install --ignore-scripts
@@ -37,18 +49,42 @@ jobs:
           cd frontend
           npm run build
 
-      - name: Publish to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
+      - name: Copy frontend assets to backend
+        run: |
+          mkdir -p backend/static
+          cp -r frontend/dist/* backend/static/
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Export requirements
+        working-directory: ./backend
+        run: |
+          poetry export -f requirements.txt --output requirements.txt --without-hashes
+
+      - name: Deploy Worker with static assets
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: ${{ secrets.CLOUDFLARE_PAGES_PROJECT || 'underfoot-frontend' }}
-          directory: frontend/dist
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          # Optionally map env vars; uncomment if needed
-          # wranglerVersion: '3'
+          workingDirectory: backend
+          command: deploy --config wrangler.toml
+
+      - name: Create deployment notification
+        if: success()
+        run: |
+          echo "✅ Frontend static assets deployed successfully"
+          echo "🔗 Frontend URL: https://underfoot.checkmarkdevtools.dev"
+          echo "🔗 API URL: https://api.checkmarkdevtools.dev/underfoot"
 
     # Notes:
-    # - Assumes only the frontend needs deploying to Pages.
-    # - Secrets must be configured in repository settings.
-    # - E2E tests can be added prior to deploy if desired (Playwright install adds ~2-3m).
+    # - Frontend static assets are served via Workers Static Assets from the same Worker as the backend
+    # - This replaces the deprecated Cloudflare Pages Functions approach
+    # - Static assets are bundled with Worker deployment for unified CDN distribution

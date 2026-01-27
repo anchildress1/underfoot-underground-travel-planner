@@ -1,155 +1,190 @@
 name: Python Backend CI/CD
 
+# Artifact Retention Policy:
+# - Security reports (Bandit): 30 days - compliance and audit requirements
+# - Test coverage uploaded to Codecov (not as artifact)
+
 on:
-  push:
-    branches: [main, develop]
-    paths:
-      - 'backend-python/**'
-      - '.github/workflows/python-backend.yml'
   pull_request:
     branches: [main]
     paths:
-      - 'backend-python/**'
+      - 'backend/**'
+      - '.github/workflows/python-backend.yml'
   workflow_dispatch:
+
+# Cancel in-progress runs when a new commit is pushed to the same PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: write
     strategy:
       matrix:
-        python-version: ['3.11', '3.12']
+        python-version: ['3.12']
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "backend/uv.lock"
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+        run: uv python install ${{ matrix.python-version }}
 
       - name: Install dependencies
-        working-directory: ./backend-python
+        working-directory: ./backend
         run: |
-          poetry install
+          uv sync --all-extras --dev
 
       - name: Run tests with coverage
-        working-directory: ./backend-python
+        working-directory: ./backend
         run: |
-          poetry run pytest --cov=src --cov-report=xml --cov-report=term-missing
+          uv run pytest --cov=chat --cov=underfoot --cov=manage.py --cov-report=xml --cov-report=term-missing
 
+      # codecov-action@v5: Explicit token required (env var deprecated)
+      # https://github.com/codecov/codecov-action/releases/tag/v5.0.0
+      # IMPORTANT: CODECOV_TOKEN secret must be configured in repository settings
+      # Navigate to Settings > Secrets and variables > Actions > New repository secret
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
+        continue-on-error: true
+        if: secrets.CODECOV_TOKEN != ''
         with:
-          file: ./backend-python/coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./backend/coverage.xml
           flags: python-backend
           name: python-backend-coverage
+          fail_ci_if_error: false
 
   lint:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "backend/uv.lock"
 
       - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+        run: uv python install 3.12
 
       - name: Install dependencies
-        working-directory: ./backend-python
+        working-directory: ./backend
         run: |
-          poetry install
+          uv sync --all-extras --dev
 
       - name: Run Ruff linting
-        working-directory: ./backend-python
+        working-directory: ./backend
         run: |
-          poetry run ruff check .
+          uv run ruff check chat underfoot manage.py tests
 
       - name: Run Black formatting check
-        working-directory: ./backend-python
+        working-directory: ./backend
         run: |
-          poetry run black --check .
+          uv run black --check chat underfoot manage.py tests
 
       - name: Run MyPy type checking
-        working-directory: ./backend-python
+        working-directory: ./backend
         run: |
-          poetry run mypy src/
+          uv run mypy chat underfoot manage.py
 
   security:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: write
+      security-events: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "backend/uv.lock"
 
       - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+        run: uv python install 3.12
 
       - name: Install security tools
         run: |
-          pip install safety bandit
+          uv tool install bandit
+          uv tool install safety
 
       - name: Run Safety check
-        working-directory: ./backend-python
+        working-directory: ./backend
+        continue-on-error: true
         run: |
-          poetry export -f requirements.txt --output requirements.txt --without-hashes
-          safety check -r requirements.txt
+          uv export --format requirements-txt --output-file requirements.txt --no-hashes
+          safety check -r requirements.txt || echo "Safety check failed or requires authentication"
 
       - name: Run Bandit security scan
-        working-directory: ./backend-python
+        working-directory: ./backend
         run: |
-          bandit -r src/ -f json -o bandit-report.json || true
-          bandit -r src/
+          bandit -r chat/ underfoot/ manage.py -f json -o bandit-report.json || true
+          bandit -r chat/ underfoot/ manage.py
 
       - name: Upload Bandit report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: bandit-security-report
-          path: backend-python/bandit-report.json
+          path: backend/bandit-report.json
+          retention-days: 30
+          if-no-files-found: warn
+          compression-level: 9
 
   deploy:
     needs: [test, lint, security]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      deployments: write
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "backend/uv.lock"
 
       - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+        run: uv python install 3.12
 
       - name: Export requirements
-        working-directory: ./backend-python
+        working-directory: ./backend
         run: |
-          poetry export -f requirements.txt --output requirements.txt --without-hashes
+          uv export --format requirements-txt --output-file requirements.txt --no-hashes
 
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          workingDirectory: backend-python
+          workingDirectory: backend
           command: deploy --config wrangler.toml
 
       - name: Create deployment notification

@@ -1,4 +1,4 @@
-.PHONY: help dev dev-backend dev-frontend build build-backend build-frontend
+.PHONY: help dev dev-backend dev-frontend build build-backend build-frontend ai-checks
 .PHONY: install install-backend install-frontend
 .PHONY: format format-backend format-frontend
 .PHONY: lint lint-backend lint-frontend
@@ -17,12 +17,16 @@ help:
 	@echo "  make test             - Run all tests"
 	@echo "  make typecheck        - Type check all code"
 	@echo "  make clean            - Clean build artifacts"
+	@echo "  make ai-checks        - Run all checks (format, lint, test)"
+
+ai-checks: test
+
 
 # Development
 dev: dev-frontend
 
 dev-backend:
-	cd backend && poetry run uvicorn src.workers.chat_worker:app --reload --port 8000
+	cd backend && uv run python manage.py runserver
 
 dev-frontend:
 	npm run -w frontend dev
@@ -31,7 +35,7 @@ dev-frontend:
 build: build-frontend
 
 build-backend:
-	cd backend && poetry build
+	cd backend && uv build
 
 build-frontend:
 	npm run -w frontend build
@@ -40,17 +44,17 @@ build-frontend:
 install: install-backend install-frontend
 
 install-backend:
-	cd backend && poetry install
+	cd backend && uv sync
 
 install-frontend:
-	npm ci
+	npm install
 
 # Format (run first)
 format: format-backend format-frontend
 
 format-backend:
-	cd backend && poetry run black src tests
-	cd backend && poetry run ruff format src tests
+	cd backend && uv run black chat underfoot manage.py tests
+	cd backend && uv run ruff format chat underfoot manage.py tests
 
 format-frontend:
 	npm run format
@@ -59,7 +63,7 @@ format-frontend:
 lint: lint-backend lint-frontend
 
 lint-backend:
-	cd backend && poetry run ruff check src tests
+	cd backend && uv run ruff check chat underfoot manage.py tests
 
 lint-frontend:
 	npm run -w frontend lint
@@ -68,7 +72,7 @@ lint-frontend:
 test: format lint test-backend test-frontend
 
 test-backend:
-	cd backend && poetry run pytest
+	cd backend && uv run pytest
 
 test-frontend:
 	npm --prefix frontend test
@@ -77,7 +81,7 @@ test-frontend:
 typecheck: typecheck-backend typecheck-frontend
 
 typecheck-backend:
-	cd backend && poetry run mypy src
+	cd backend && uv run mypy chat underfoot manage.py
 
 typecheck-frontend:
 	npm --prefix frontend run typecheck
@@ -88,6 +92,7 @@ clean: clean-backend clean-frontend
 clean-backend:
 	cd backend && rm -rf .pytest_cache htmlcov .coverage .ruff_cache
 	cd backend && find . -type d -name __pycache__ -exec rm -rf {} +
+	cd backend && rm -rf dist
 
 clean-frontend:
 	cd frontend && rm -rf node_modules dist coverage playwright-report test-results

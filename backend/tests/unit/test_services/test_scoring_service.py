@@ -1,8 +1,7 @@
 """Unit tests for scoring service."""
 
-
-from src.models.domain_models import SearchResult
-from src.services import scoring_service
+from chat.schemas import SearchResult
+from chat.services import scoring_service
 
 
 def test_score_result_with_intent_match():

@@ -38,6 +38,7 @@
     "npm": ">=11.5.1"
   },
   "scripts": {
+    "prepare": "[ -n \"$CI\" ] || npx lefthook install",
     "dev": "npm run dev:frontend",
     "dev:backend": "cd backend && poetry run uvicorn src.workers.chat_worker:app --reload --port 8000",
     "dev:frontend": "npm run -w frontend dev",
@@ -55,6 +56,7 @@
     "test:frontend": "npm --prefix frontend test"
   },
   "devDependencies": {
+    "@checkmarkdevtools/commitlint-plugin-rai": "^0.1.6",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@eslint/js": "^9.33.0",
