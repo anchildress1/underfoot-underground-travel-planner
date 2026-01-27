@@ -299,11 +299,7 @@ class EmbeddingService:
         }
 
         try:
-            _response = (
-                self.supabase.client.table("app_embeddings.places_embeddings")
-                .upsert(data)
-                .execute()
-            )
+            self.supabase.client.table("app_embeddings.places_embeddings").upsert(data).execute()
 
             logger.info(
                 "embedding.stored",

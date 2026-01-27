@@ -83,7 +83,7 @@ class SupabaseService:
                 "expires_at": expires_at.isoformat(),
             }
 
-            _response = self.client.table("app_cache.search_results").upsert(data).execute()
+            self.client.table("app_cache.search_results").upsert(data).execute()
 
             logger.info(
                 "supabase.cache_stored",
@@ -158,7 +158,7 @@ class SupabaseService:
                 "expires_at": expires_at.isoformat(),
             }
 
-            _response = self.client.table("app_cache.location_cache").upsert(data).execute()
+            self.client.table("app_cache.location_cache").upsert(data).execute()
 
             logger.info(
                 "supabase.location_stored",
