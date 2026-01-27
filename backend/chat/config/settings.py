@@ -10,15 +10,15 @@ class Settings(BaseSettings):
 
     log_level: str = "INFO"
 
-    openai_api_key: str
-    google_maps_api_key: str
-    serpapi_key: str
-    reddit_client_id: str
-    reddit_client_secret: str
-    eventbrite_token: str
+    openai_api_key: str = "sk-test-key"
+    google_maps_api_key: str = "test-google-maps-key"
+    serpapi_key: str = "test-serpapi-key"
+    reddit_client_id: str = "test-reddit-client-id"
+    reddit_client_secret: str = "test-reddit-secret"
+    eventbrite_token: str = "test-eventbrite-token"
 
-    supabase_url: str
-    supabase_publishable_key: str
+    supabase_url: str = "https://test.supabase.co"
+    supabase_publishable_key: str = "test-publishable-key"
     supabase_secret_key: str | None = None
     supabase_key: str | None = None  # app_admin_user password for TimescaleDB + application roles
 
@@ -33,4 +33,4 @@ def get_settings() -> Settings:
     Raises:
         ValidationError: If required environment variables are missing
     """
-    return Settings()  # type: ignore[call-arg]
+    return Settings()
