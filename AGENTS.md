@@ -45,7 +45,7 @@ When generating commit messages, do NOT append any `Signed-off-by:` lines or att
 ## Cross-Cutting Constraints
 
 - **Node**: prefer Node 24+ for frontend; Node 22+ supported in CI. Use the repo `package.json` scripts.
-- **Python**: runtime 3.12+ for backend; use `poetry` to manage dependencies and run tests.
+- **Python**: runtime 3.12+ for backend; use `uv` to manage dependencies and run tests.
 - **Tests & Coverage**: frontend coverage targets are stricter (see `frontend/AGENTS.md`); backend target ≥30% (see `backend/AGENTS.md`).
 - **Secrets**: store in environment variables and Pydantic settings (backend) or `VITE_` env vars (frontend). Never commit secrets or log them in responses.
 - **Security**: sanitize user inputs, restrict CORS to allowed origins, and avoid storing PII.

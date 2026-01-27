@@ -10,8 +10,8 @@ python3 --version  # Should be 3.11+
 ### 2. Install Dependencies
 ```bash
 cd backend-python
-pip install poetry
-poetry install
+# uv is already installed
+uv sync
 ```
 
 ### 3. Configure Environment
@@ -23,7 +23,7 @@ cp .env.example .env
 ### 4. Run Development Server
 ```bash
 # Option 1: FastAPI dev server (recommended for development)
-poetry run uvicorn src.workers.chat_worker:app --reload --port 8000
+uv run uvicorn src.workers.chat_worker:app --reload --port 8000
 
 # Option 2: Wrangler local (Cloudflare Workers simulation)
 wrangler dev
@@ -46,13 +46,13 @@ curl -X POST http://localhost:8000/underfoot/search \
 ## 🧪 Run Tests
 ```bash
 # All tests with coverage
-poetry run pytest
+uv run pytest
 
 # Specific test file
-poetry run pytest tests/unit/test_services/test_openai_service.py
+uv run pytest tests/unit/test_services/test_openai_service.py
 
 # With verbose output
-poetry run pytest -v
+uv run pytest -v
 ```
 
 ## 🚢 Deploy to Cloudflare
@@ -82,7 +82,7 @@ wrangler secret put SUPABASE_SECRET_KEY
 ./scripts/deploy.sh
 
 # Or manually
-poetry export -f requirements.txt --output requirements.txt --without-hashes
+uv export --format requirements-txt --output-file requirements.txt --no-hashes
 wrangler deploy
 ```
 
@@ -90,16 +90,16 @@ wrangler deploy
 
 ```bash
 # Lint code
-poetry run ruff check .
+uv run ruff check .
 
 # Format code
-poetry run black .
+uv run black .
 
 # Type check
-poetry run mypy src/
+uv run mypy src/
 
 # Security scan
-poetry run bandit -r src/
+uv run bandit -r src/
 ```
 
 ## 📊 Code Quality Targets
@@ -113,13 +113,13 @@ poetry run bandit -r src/
 
 ### Import Errors
 ```bash
-# Make sure you're in the poetry shell
-poetry shell
+# uv run handles virtual env automatically
+# No need for shell activation with uv run
 ```
 
 ### Missing Dependencies
 ```bash
-poetry install --sync
+uv sync --sync
 ```
 
 ### Wrangler Issues

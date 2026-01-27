@@ -5,7 +5,7 @@ Python FastAPI backend for underground travel planning. Orchestrates OpenAI, Goo
 
 **Tech & Constraints:**
 
-- Python 3.12.11+, FastAPI (async/await), Poetry
+- Python 3.12.11+, FastAPI (async/await), uv
 - Black formatter, Ruff linter, type hints at function signatures
 - Secrets via Pydantic settings (never leak in logs/responses)
 - CORS restricted to allowed origins
@@ -91,7 +91,7 @@ OPENAI_API_KEY, OPENAI_MODEL, DEFAULT_RADIUS_MILES, MAX_RADIUS_MILES, CACHE_TTL_
 
 - Add service: create file, add settings/constants, add tests, wire into orchestration
 - Add endpoint: define models, add route, add tests
-- Update dependencies: poetry show --outdated, poetry update
+- Update dependencies: uv pip list --outdated, uv sync --upgrade
 
 **Troubleshooting:**
 

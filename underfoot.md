@@ -102,8 +102,8 @@ npm run dev
 ### Backend
 ```bash
 cd backend
-poetry install
-poetry run uvicorn src.workers.chat_worker:app --reload
+uv sync
+uv run uvicorn src.workers.chat_worker:app --reload
 ```
 
 ### Both (from root)
@@ -203,8 +203,8 @@ cd frontend && npm test
 npm run test:coverage
 
 # Backend tests
-cd backend && poetry run pytest
-poetry run pytest --cov=src
+cd backend && uv run pytest
+uv run pytest --cov=src
 
 # All tests (from root)
 npm test

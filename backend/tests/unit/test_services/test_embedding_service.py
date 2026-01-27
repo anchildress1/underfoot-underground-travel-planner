@@ -278,7 +278,9 @@ def test_store_place_embedding_success(embedding_service):
     embedding_service.openai_client.embeddings.create.return_value = mock_embedding_response
 
     mock_db_response = MagicMock()
-    embedding_service.supabase.client.table.return_value.upsert.return_value.execute.return_value = mock_db_response
+    embedding_service.supabase.client.table.return_value.upsert.return_value.execute.return_value = (
+        mock_db_response
+    )
 
     metadata = {"name": "Secret Cave", "location": "Pikeville, KY"}
 

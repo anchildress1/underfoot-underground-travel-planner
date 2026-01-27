@@ -48,12 +48,9 @@ Blazingly fast, secure, and observable Python backend featuring structured loggi
 ### 1. Install Dependencies
 
 ```bash
-# Install Poetry (if not installed)
-curl -sSL https://install.python-poetry.org | python3 -
-
 # Install project dependencies
 cd backend-python
-poetry install
+uv sync
 ```
 
 ### 2. Configure Environment
@@ -122,11 +119,12 @@ Blazingly fast, secure, and observable Python backend featuring structured loggi
 
 ```bash
 # Install Poetry (if not installed)
-curl -sSL https://install.python-poetry.org | python3 -
+# Install uv (if not installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Install project dependencies
 cd backend
-poetry install
+uv sync
 ```
 
 ### 2. Configure Environment
@@ -143,7 +141,7 @@ vim .env
 
 ```bash
 # Activate virtual environment
-poetry shell
+# No need for shell activation with uv run
 
 # Run development server
 uvicorn src.workers.chat_worker:app --reload --port 8000
@@ -156,16 +154,16 @@ wrangler dev
 
 ```bash
 # Run all tests with coverage
-poetry run pytest
+uv run pytest
 
 # Run specific test file
-poetry run pytest tests/unit/test_services/test_openai_service.py
+uv run pytest tests/unit/test_services/test_openai_service.py
 
 # Run with verbose output
-poetry run pytest -v
+uv run pytest -v
 
 # Generate coverage report (HTML)
-poetry run pytest --cov=src --cov-report=html
+uv run pytest --cov=src --cov-report=html
 ```
 
 ## Run dev servers & tests (per-service)
@@ -195,18 +193,18 @@ Back-end — dev server
 ```bash
 # Use the backend folder
 cd backend
-poetry install
-poetry run uvicorn src.workers.chat_worker:app --reload --port 8000
+uv sync
+uv run uvicorn src.workers.chat_worker:app --reload --port 8000
 ```
 
 Back-end — tests
 
 ```bash
 cd backend
-poetry install
-poetry run pytest
+uv sync
+uv run pytest
 # run with coverage
-poetry run pytest --cov=src --cov-report=term-missing
+uv run pytest --cov=src --cov-report=term-missing
 ```
 
 Run both locally (from repo root)
@@ -217,7 +215,7 @@ Run both locally (from repo root)
 
 # Option B: manually open two terminals
 cd frontend && npm run dev
-cd backend && poetry run uvicorn src.workers.chat_worker:app --reload --port 8000
+cd backend && uv run uvicorn src.workers.chat_worker:app --reload --port 8000
 ```
 
 Notes
@@ -383,24 +381,24 @@ Configure alerts in Cloudflare dashboard:
 
 ```bash
 # Run all unit tests
-poetry run pytest tests/unit/
+uv run pytest tests/unit/
 
 # Run with coverage
-poetry run pytest tests/unit/ --cov=src/services
+uv run pytest tests/unit/ --cov=src/services
 ```
 
 ### Integration Tests
 
 ```bash
 # Run integration tests
-poetry run pytest tests/integration/
+uv run pytest tests/integration/
 ```
 
 ### End-to-End Tests
 
 ```bash
 # Run e2e tests
-poetry run pytest tests/e2e/
+uv run pytest tests/e2e/
 ```
 
 ## 🔒 Security
@@ -428,9 +426,9 @@ poetry run pytest tests/e2e/
 1. Follow the guidelines in `AGENTS.md`
 2. Write tests for all new features
 3. Ensure coverage >85%
-4. Run linting: `poetry run ruff check .`
-5. Run type checking: `poetry run mypy src/`
-6. Format code: `poetry run black .`
+4. Run linting: `uv run ruff check .`
+5. Run type checking: `uv run mypy src/`
+6. Format code: `uv run black .`
 
 ## 📄 License
 
