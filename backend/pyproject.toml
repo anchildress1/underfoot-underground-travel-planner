@@ -36,6 +36,7 @@ dev = [
     "types-bleach>=6.3.0.20251029",
     "pytest-django>=4.7.0",
     "django-stubs>=5.2.9",
+    "django-ninja>=1.5.3",
 ]
 
 [tool.pytest.ini_options]

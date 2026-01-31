@@ -1751,6 +1751,7 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "black" },
+    { name = "django-ninja" },
     { name = "django-stubs" },
     { name = "mypy" },
     { name = "pytest" },
@@ -1783,6 +1784,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "black", specifier = ">=23.11.0" },
+    { name = "django-ninja", specifier = ">=1.5.3" },
     { name = "django-stubs", specifier = ">=5.2.9" },
     { name = "mypy", specifier = ">=1.7.1" },
     { name = "pytest", specifier = ">=7.4.3" },

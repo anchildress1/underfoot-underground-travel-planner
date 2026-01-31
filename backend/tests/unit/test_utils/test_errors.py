@@ -1,6 +1,7 @@
 """Tests for custom error classes."""
 
 from chat.utils.errors import (
+    AuthenticationError,
     CacheError,
     RateLimitError,
     UnderfootError,
@@ -15,6 +16,10 @@ def test_underfoot_error_base():
     assert str(error) == "Test error"
     assert error.status_code == 500
     assert error.error_code == "TEST_ERROR"
+
+    # Test to_dict method
+    error_dict = error.to_dict()
+    assert error_dict == {"error": "TEST_ERROR", "message": "Test error", "context": {}}
 
 
 def test_validation_error():
@@ -49,3 +54,16 @@ def test_cache_error():
     assert error.status_code == 500
     assert error.error_code == "CACHE_ERROR"
     assert error.context.get("operation") == "get"
+
+
+def test_authentication_error():
+    """Test AuthenticationError."""
+    error = AuthenticationError()
+    assert error.status_code == 401
+    assert error.error_code == "AUTHENTICATION_ERROR"
+    assert "Authentication failed" in str(error)
+
+    # Test with custom message
+    error = AuthenticationError("Invalid API key", key_type="openai")
+    assert "Invalid API key" in str(error)
+    assert error.context.get("key_type") == "openai"
