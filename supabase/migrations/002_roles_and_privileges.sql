@@ -24,6 +24,9 @@ COMMENT ON ROLE app_admin IS 'Full control over all application schemas and obje
 -- SCHEMA PRIVILEGES
 -- ============================================================================
 
+-- Grant USAGE on extensions schema (required for vector type)
+GRANT USAGE ON SCHEMA extensions TO app_readonly, app_readwrite, app_admin;
+
 -- app_readonly: USAGE on all schemas, SELECT on all tables
 GRANT USAGE ON SCHEMA app_cache, app_embeddings, app_monitoring TO app_readonly;
 ALTER DEFAULT PRIVILEGES IN SCHEMA app_cache, app_embeddings, app_monitoring
@@ -49,7 +52,8 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA app_cache, app_embeddings, app_monitoring
 -- SEARCH PATH CONFIGURATION
 -- ============================================================================
 -- Set default search_path for each role to prefer application schemas
+-- Include extensions schema for vector type access
 
-ALTER ROLE app_readonly SET search_path TO app_cache, app_embeddings, app_monitoring, public;
-ALTER ROLE app_readwrite SET search_path TO app_cache, app_embeddings, app_monitoring, public;
-ALTER ROLE app_admin SET search_path TO app_cache, app_embeddings, app_monitoring, public;
+ALTER ROLE app_readonly SET search_path TO app_cache, app_embeddings, app_monitoring, extensions, public;
+ALTER ROLE app_readwrite SET search_path TO app_cache, app_embeddings, app_monitoring, extensions, public;
+ALTER ROLE app_admin SET search_path TO app_cache, app_embeddings, app_monitoring, extensions, public;

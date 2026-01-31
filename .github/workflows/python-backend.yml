@@ -6,6 +6,7 @@ name: Python Backend CI/CD
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
     branches: [main]
     paths:
       - 'backend/**'
@@ -48,6 +49,16 @@ jobs:
 
       - name: Run tests with coverage
         working-directory: ./backend
+        env:
+          # Test environment variables - using dummy values for CI
+          OPENAI_API_KEY: "test-key"
+          GOOGLE_MAPS_API_KEY: "test-key"
+          SERPAPI_KEY: "test-key"
+          REDDIT_CLIENT_ID: "test-id"
+          REDDIT_CLIENT_SECRET: "test-secret"
+          EVENTBRITE_TOKEN: "test-token"
+          SUPABASE_URL: "https://test.supabase.co"
+          SUPABASE_PUBLISHABLE_KEY: "test-key"
         run: |
           uv run pytest --cov=chat --cov=underfoot --cov=manage.py --cov-report=xml --cov-report=term-missing
 

@@ -83,7 +83,7 @@ class SupabaseService:
                 "expires_at": expires_at.isoformat(),
             }
 
-            self.client.table("app_cache.search_results").upsert(data).execute()  # type: ignore[arg-type]
+            self.client.table("search_results").upsert(data).execute()  # type: ignore[arg-type]
 
             logger.info(
                 "supabase.cache_stored",
@@ -109,7 +109,7 @@ class SupabaseService:
         """
         try:
             response = (
-                self.client.table("app_cache.search_results")
+                self.client.table("search_results")
                 .select("*")
                 .eq("query_hash", query_hash)
                 .gt("expires_at", datetime.now(UTC).isoformat())
@@ -158,7 +158,7 @@ class SupabaseService:
                 "expires_at": expires_at.isoformat(),
             }
 
-            self.client.table("app_cache.location_cache").upsert(data).execute()  # type: ignore[arg-type]
+            self.client.table("location_cache").upsert(data).execute()  # type: ignore[arg-type]
 
             logger.info(
                 "supabase.location_stored",
@@ -184,7 +184,7 @@ class SupabaseService:
         """
         try:
             response = (
-                self.client.table("app_cache.location_cache")
+                self.client.table("location_cache")
                 .select("*")
                 .eq("raw_input", raw_input)
                 .gt("expires_at", datetime.now(UTC).isoformat())
@@ -210,14 +210,14 @@ class SupabaseService:
         """
         try:
             search_count = len(
-                self.client.table("app_cache.search_results")
+                self.client.table("search_results")
                 .select("id", count="exact")  # type: ignore[arg-type]
                 .execute()
                 .data
             )
 
             location_count = len(
-                self.client.table("app_cache.location_cache")
+                self.client.table("location_cache")
                 .select("id", count="exact")  # type: ignore[arg-type]
                 .execute()
                 .data

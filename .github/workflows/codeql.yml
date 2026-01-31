@@ -6,6 +6,7 @@ name: CodeQL Security Analysis
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
     branches: [main]
   schedule:
     - cron: '0 2 * * 0'
@@ -25,6 +26,9 @@ jobs:
       actions: read
       contents: read
       security-events: write
+
+    # Skip if default CodeQL setup is enabled to avoid conflicts
+    if: github.event_name == 'schedule'
 
     strategy:
       fail-fast: false

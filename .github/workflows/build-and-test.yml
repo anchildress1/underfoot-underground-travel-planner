@@ -9,7 +9,7 @@ name: Build and Test
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, ready_for_review]
 
 # Cancel in-progress runs when a new commit is pushed to the same PR
 concurrency:
