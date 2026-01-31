@@ -110,7 +110,7 @@ class EmbeddingService:
         try:
             dummy_embedding = [0.0] * self.embedding_dimensions
             self.supabase.client.rpc(
-                "search_places_by_similarity",
+                "app_embeddings.search_places_by_similarity",
                 {
                     "query_embedding": dummy_embedding,
                     "match_threshold": 0.9999,
@@ -299,7 +299,7 @@ class EmbeddingService:
         }
 
         try:
-            self.supabase.client.table("places_embeddings").upsert(data).execute()  # type: ignore[arg-type]
+            self.supabase.client.table("app_embeddings.places_embeddings").upsert(data).execute()  # type: ignore[arg-type]
 
             logger.info(
                 "embedding.stored",
@@ -358,7 +358,7 @@ class EmbeddingService:
             query_embedding = self.generate_embedding(query_text)
 
             response = self.supabase.client.rpc(
-                "search_places_by_similarity",
+                "app_embeddings.search_places_by_similarity",
                 {
                     "query_embedding": query_embedding,
                     "match_threshold": similarity_threshold,
