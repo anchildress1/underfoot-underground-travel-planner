@@ -2,7 +2,6 @@
 
 import asyncio
 import time
-from dataclasses import asdict
 from typing import Any
 from uuid import uuid4
 
@@ -122,7 +121,7 @@ async def execute_search(
     ]
 
     response = await openai_service.generate_response(
-        parsed.intent, search_context.location, places_for_response, asdict(summary)
+        parsed.intent, search_context.location, places_for_response, summary.model_dump()
     )
 
     final_result = {
@@ -134,10 +133,10 @@ async def execute_search(
             "request_id": request_id,
             "execution_time_ms": int((time.perf_counter() - started) * 1000),
             "data_source_ms": int((time.perf_counter() - data_source_started) * 1000),
-            "parsed": asdict(parsed),
-            "normalized_location": asdict(normalized),
+            "parsed": parsed.model_dump(),
+            "normalized_location": normalized.model_dump(),
             "source_stats": source_stats,
-            "scoring_summary": asdict(summary),
+            "scoring_summary": summary.model_dump(),
             "cache_status": "miss",
         },
     }

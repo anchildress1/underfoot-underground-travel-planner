@@ -6,7 +6,7 @@
   ],
   "codeql-scanner.github.owner": "CheckMarKDevTools",
   "codeql-scanner.github.repo": "underfoot-underground-travel-planner",
-  "python.defaultInterpreterPath": "/Users/anchildress1/Library/Caches/pypoetry/virtualenvs/underfoot-backend-python-O7_ZvclF-py3.12/bin/python",
+  "python.defaultInterpreterPath": "./backend/.venv/bin/python",
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter",
     "editor.formatOnSave": true,

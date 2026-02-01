@@ -40,7 +40,7 @@
   "scripts": {
     "prepare": "[ -n \"$CI\" ] || npx lefthook install",
     "dev": "npm run dev:frontend",
-    "dev:backend": "cd backend && poetry run uvicorn src.workers.chat_worker:app --reload --port 8000",
+    "dev:backend": "cd backend && uv run python manage.py runserver",
     "dev:frontend": "npm run -w frontend dev",
     "dev:worker": "cd cloudflare-worker && wrangler dev",
     "build": "npm run -w frontend build",
@@ -50,9 +50,9 @@
     "format:remark": "npm exec -- remark . -o --quiet",
     "format:fix-admonitions": "node scripts/fix-github-admonitions.js",
     "lint": "npm run -w frontend lint",
-    "lint:python": "cd backend && poetry run ruff check .",
+    "lint:python": "cd backend && uv run ruff check .",
     "test": "npm run format && npm run lint && npm run test:backend && npm run test:frontend",
-    "test:backend": "cd backend && poetry run pytest",
+    "test:backend": "cd backend && uv run pytest",
     "test:frontend": "npm --prefix frontend test"
   },
   "devDependencies": {
@@ -65,7 +65,7 @@
     "eslint": "^9.33.0",
     "eslint-plugin-naming": "^0.1.10",
     "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-hooks": "^6.1.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
     "lefthook": "^1.12.3",
