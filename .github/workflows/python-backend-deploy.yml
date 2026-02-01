@@ -1,0 +1,54 @@
+name: deploy:backend-python-worker
+
+# Deploys the Python backend to Cloudflare Workers.
+# Required Secrets:
+# - CLOUDFLARE_API_TOKEN
+# - CLOUDFLARE_ACCOUNT_ID
+
+on:
+  workflow_dispatch: {}
+
+concurrency:
+  group: backend-python-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "backend/uv.lock"
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Export requirements
+        working-directory: ./backend
+        run: |
+          uv export --format requirements-txt --output-file requirements.txt --no-hashes
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: backend
+          command: deploy --config wrangler.toml
+
+      - name: Deployment notification
+        if: success()
+        run: |
+          echo "✅ Python backend deployed successfully to Cloudflare Workers"
+          echo "🔗 URL: https://underfoot-python-backend.workers.dev"

@@ -27,8 +27,9 @@ jobs:
       contents: read
       security-events: write
 
-    # Skip if default CodeQL setup is enabled to avoid conflicts
-    if: github.event_name == 'schedule'
+    # Run weekly on schedule; for PRs, skip drafts.
+    # Note: if you also enable GitHub's "Default setup" for CodeQL, disable this workflow to avoid double-scanning.
+    if: github.event_name == 'schedule' || (github.event_name == 'pull_request' && github.event.pull_request.draft == false)
 
     strategy:
       fail-fast: false
