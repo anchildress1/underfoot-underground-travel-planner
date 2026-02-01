@@ -1,6 +1,6 @@
 version: 2
 updates:
-  # npm dependencies (root + frontend combined)
+  # npm dependencies (root workspace includes frontend)
   - package-ecosystem: npm
     directory: "/"
     schedule:
@@ -15,38 +15,10 @@ updates:
       - npm
     commit-message:
       prefix: "chore(deps)"
-      include: "scope"
     allow:
       - dependency-type: "all"
     ignore:
       - dependency-name: "node"
-    groups:
-      production:
-        dependency-types:
-          - production
-      development:
-        dependency-types:
-          - dev
-
-  # npm dependencies (frontend)
-  - package-ecosystem: npm
-    directory: "/frontend"
-    schedule:
-      interval: weekly
-      day: monday
-      time: "03:00"
-    open-pull-requests-limit: 2
-    reviewers:
-      - underfoot-team
-    labels:
-      - dependencies
-      - npm
-      - frontend
-    commit-message:
-      prefix: "chore(deps)"
-      include: "scope"
-    allow:
-      - dependency-type: "all"
     groups:
       production:
         dependency-types:
@@ -71,7 +43,6 @@ updates:
       - backend
     commit-message:
       prefix: "chore(deps)"
-      include: "scope"
     allow:
       - dependency-type: "all"
     groups:
@@ -97,7 +68,6 @@ updates:
       - github-actions
     commit-message:
       prefix: "chore(ci)"
-      include: "scope"
     allow:
       - dependency-type: "all"
     groups:
