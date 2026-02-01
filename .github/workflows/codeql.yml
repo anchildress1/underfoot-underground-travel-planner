@@ -5,8 +5,11 @@ name: CodeQL Security Analysis
 # - setup-node@v6 automatically caches npm with 'cache: npm' parameter
 
 on:
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
+    types: [open, reopened, synchronize, ready_for_review]
   schedule:
     - cron: '0 2 * * 0'
 
