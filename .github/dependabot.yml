@@ -8,8 +8,6 @@ updates:
       day: monday
       time: "03:00"
     open-pull-requests-limit: 2
-    reviewers:
-      - underfoot-team
     labels:
       - dependencies
       - npm
@@ -35,8 +33,6 @@ updates:
       day: monday
       time: "03:00"
     open-pull-requests-limit: 2
-    reviewers:
-      - underfoot-team
     labels:
       - dependencies
       - python
@@ -61,8 +57,6 @@ updates:
       day: monday
       time: "03:30"
     open-pull-requests-limit: 2
-    reviewers:
-      - underfoot-team
     labels:
       - dependencies
       - github-actions
