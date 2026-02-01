@@ -110,7 +110,7 @@ class EmbeddingService:
         try:
             dummy_embedding = [0.0] * self.embedding_dimensions
             self.supabase.client.rpc(
-                "search_places_by_similarity",
+                "app_embeddings.search_places_by_similarity",
                 {
                     "query_embedding": dummy_embedding,
                     "match_threshold": 0.9999,

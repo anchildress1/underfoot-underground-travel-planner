@@ -4,10 +4,14 @@
 -- Enable required extensions and create application schemas
 -- PostgreSQL best practice: avoid public schema for application data
 
--- Enable required extensions
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "pgcrypto";
-CREATE EXTENSION IF NOT EXISTS "vector";
+-- Create extensions schema first (before installing extensions)
+CREATE SCHEMA IF NOT EXISTS extensions AUTHORIZATION postgres;
+COMMENT ON SCHEMA extensions IS 'PostgreSQL extensions (uuid-ossp, pgcrypto, vector)';
+
+-- Enable required extensions in dedicated schema
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA extensions;
+CREATE EXTENSION IF NOT EXISTS "pgcrypto" WITH SCHEMA extensions;
+CREATE EXTENSION IF NOT EXISTS "vector" WITH SCHEMA extensions;
 
 -- Revoke public schema creation (PostgreSQL 15+ best practice)
 -- Prevents untrusted users from creating objects in public schema

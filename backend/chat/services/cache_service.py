@@ -100,7 +100,7 @@ async def get_cached_location(raw_input: str) -> dict[str, Any] | None:
 
     try:
         result = (
-            supabase.client.table("app_cache.location_cache")
+            supabase.client.table("location_cache")
             .select("*")
             .eq("raw_input", raw_input.strip().lower())
             .gt("expires_at", datetime.now(UTC).isoformat())
@@ -148,7 +148,7 @@ async def set_cached_location(
     try:
         expires_at = (datetime.now(UTC) + timedelta(hours=ttl_hours)).isoformat()
 
-        supabase.client.table("app_cache.location_cache").upsert(
+        supabase.client.table("location_cache").upsert(
             {
                 "raw_input": raw_input.strip().lower(),
                 "normalized_location": normalized,

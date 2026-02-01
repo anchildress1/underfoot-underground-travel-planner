@@ -1,10 +1,6 @@
 # Underfoot Python Backend
 
-<p align="center">
-  <img src="../frontend/public/favicon.png" alt="Underfoot logo" width="100" height="100" />
-</p>
-
-> 🐍 Python backend for Underfoot Underground Travel Planner, built for Cloudflare Workers with FastAPI
+> 🐍 Python backend for Underfoot Underground Travel Planner, built for Cloudflare Workers with Django
 
 Blazingly fast, secure, and observable Python backend featuring structured logging, dual-layer caching, and AI-powered search orchestration.
 
@@ -21,11 +17,11 @@ Blazingly fast, secure, and observable Python backend featuring structured loggi
 
 ## 🏗️ Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────┐
 │         Cloudflare Workers (Python)          │
 ├─────────────────────────────────────────────┤
-│ Framework:      FastAPI (ASGI)              │
+│ Framework:      Django + Ninja API          │
 │ HTTP Client:    httpx (async)               │
 │ OpenAI:         openai-python (official)    │
 │ Cache:          KV + Supabase               │
@@ -37,8 +33,8 @@ Blazingly fast, secure, and observable Python backend featuring structured loggi
 
 ## 📋 Prerequisites
 
-- Python 3.11+
-- Poetry (dependency management)
+- Python 3.12+
+- uv (dependency management)
 - Cloudflare account (for deployment)
 - API keys (OpenAI, SERP, Reddit, Eventbrite, Geoapify)
 - Supabase project (for caching)
@@ -48,83 +44,12 @@ Blazingly fast, secure, and observable Python backend featuring structured loggi
 ### 1. Install Dependencies
 
 ```bash
-# Install project dependencies
-cd backend-python
-uv sync
-```
-
-### 2. Configure Environment
-
-```bash
-# Copy example environment file
-cp .env.example .env
-
-# Edit .env with your API keys
-vim .env
-```
-
-"""Underfoot Python Backend
-
-This README documents how to run and test the backend service.
-"""
-
-# Underfoot Python Backend
-
-<p align="center">
-  <img src="../frontend/public/favicon.png" alt="Underfoot logo" width="100" height="100" />
-</p>
-
-> 🐍 Python backend for Underfoot Underground Travel Planner, built for Cloudflare Workers with FastAPI
-
-Blazingly fast, secure, and observable Python backend featuring structured logging, dual-layer caching, and AI-powered search orchestration.
-
-## ✨ Features
-
-- 🚀 **Edge Performance**: Deployed on Cloudflare Workers for <100ms cold starts
-- 🔒 **Security First**: Input validation, rate limiting, XSS protection, secret management
-- 📊 **Observability**: Structured JSON logging, request tracing, metrics collection
-- 💾 **Dual-Layer Caching**: KV (edge, <1ms) + Supabase (persistent, queryable)
-- 🤖 **AI Orchestration**: OpenAI for parsing and response generation
-- 🌐 **Multi-Source Search**: SERP API, Reddit, Eventbrite integration
-- ⚡ **Async Everything**: HTTPX for non-blocking I/O
-- 🎯 **Type Safety**: Pydantic v2 for validation (5-50x faster)
-
-## 🏗️ Architecture
-
-```
-┌─────────────────────────────────────────────┐
-│         Cloudflare Workers (Python)          │
-├─────────────────────────────────────────────┤
-│ Framework:      FastAPI (ASGI)              │
-│ HTTP Client:    httpx (async)               │
-│ OpenAI:         openai-python (official)    │
-│ Cache:          KV + Supabase               │
-│ Logging:        structlog (structured)      │
-│ Security:       Pydantic validation         │
-│ Testing:        pytest + pytest-asyncio     │
-└─────────────────────────────────────────────┘
-```
-
-## 📋 Prerequisites
-
-- Python 3.11+
-- Poetry (dependency management)
-- Cloudflare account (for deployment)
-- API keys (OpenAI, SERP, Reddit, Eventbrite, Geoapify)
-- Supabase project (for caching)
-
-## 🚀 Quick Start
-
-### 1. Install Dependencies
-
-```bash
-# Install Poetry (if not installed)
 # Install uv (if not installed)
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Install project dependencies
 cd backend
-uv sync
+uv sync --all-extras --dev
 ```
 
 ### 2. Configure Environment
@@ -140,11 +65,8 @@ vim .env
 ### 3. Run Locally
 
 ```bash
-# Activate virtual environment
-# No need for shell activation with uv run
-
 # Run development server
-uvicorn src.workers.chat_worker:app --reload --port 8000
+uv run python manage.py runserver
 
 # Or use wrangler for local development
 wrangler dev
@@ -157,79 +79,23 @@ wrangler dev
 uv run pytest
 
 # Run specific test file
-uv run pytest tests/unit/test_services/test_openai_service.py
+uv run pytest tests/unit/test_services/test_cache_service.py
 
 # Run with verbose output
 uv run pytest -v
 
 # Generate coverage report (HTML)
-uv run pytest --cov=src --cov-report=html
+uv run pytest --cov=chat --cov=underfoot --cov-report=html
 ```
-
-## Run dev servers & tests (per-service)
-
-Copy the appropriate `.env` files first (see `.env.example` in each service).
-
-Front-end — dev server
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Front-end — tests
-
-```bash
-cd frontend
-npm install
-npm test
-# coverage report (frontend)
-npm run test:coverage
-```
-
-Back-end — dev server
-
-```bash
-# Use the backend folder
-cd backend
-uv sync
-uv run uvicorn src.workers.chat_worker:app --reload --port 8000
-```
-
-Back-end — tests
-
-```bash
-cd backend
-uv sync
-uv run pytest
-# run with coverage
-uv run pytest --cov=src --cov-report=term-missing
-```
-
-Run both locally (from repo root)
-
-```bash
-# Option A: root script (if defined)
-### Structured Logging
-
-# Option B: manually open two terminals
-cd frontend && npm run dev
-cd backend && uv run uvicorn src.workers.chat_worker:app --reload --port 8000
-```
-
-Notes
-
-- Ensure `frontend/.env` and `backend/.env` are populated from their example files before starting.
-- If VS Code can't resolve imports for the backend, select the Poetry interpreter in the Command Palette.
 
 ## 📦 Project Structure
 
-```
+```text
 backend/
-├── src/
-│   ├── workers/
-│   │   └── chat_worker.py           # Main FastAPI application
+├── chat/
+│   ├── api.py                       # Django Ninja API endpoints
+│   ├── schemas.py                   # Pydantic models
+│   ├── middleware.py                # Request tracing
 │   ├── services/
 │   │   ├── openai_service.py        # OpenAI integration
 │   │   ├── geocoding_service.py     # Geoapify location normalization
@@ -239,14 +105,6 @@ backend/
 │   │   ├── scoring_service.py       # Result scoring & ranking
 │   │   ├── cache_service.py         # Dual-layer caching
 │   │   └── search_service.py        # Search orchestration
-│   ├── models/
-│   │   ├── request_models.py        # Pydantic request models
-│   │   ├── response_models.py       # Pydantic response models
-│   │   └── domain_models.py         # Domain entities
-│   ├── middleware/
-│   │   ├── tracing_middleware.py    # Request tracing
-│   │   ├── cors_middleware.py       # CORS configuration
-│   │   └── security_middleware.py   # Security headers
 │   ├── utils/
 │   │   ├── logger.py                # Structured logging
 │   │   ├── errors.py                # Custom exceptions
@@ -254,11 +112,16 @@ backend/
 │   └── config/
 │       ├── settings.py              # Environment settings
 │       └── constants.py             # Application constants
+├── underfoot/
+│   ├── settings.py                  # Django settings
+│   ├── urls.py                      # URL routing
+│   └── asgi.py                      # ASGI application
 ├── tests/
 │   ├── unit/
 │   ├── integration/
 │   └── e2e/
-├── pyproject.toml                   # Poetry dependencies
+├── pyproject.toml                   # uv dependencies
+├── uv.lock                          # Dependency lock file
 ├── wrangler.toml                    # Cloudflare Workers config
 ├── .env.example                     # Environment template
 ├── AGENTS.md                        # Development guidelines
@@ -276,7 +139,7 @@ Required environment variables (see `.env.example`):
 OPENAI_API_KEY=sk-...
 
 # External APIs
-GEOAPIFY_API_KEY=...
+GOOGLE_MAPS_API_KEY=...
 SERPAPI_KEY=...
 REDDIT_CLIENT_ID=...
 REDDIT_CLIENT_SECRET=...
@@ -284,12 +147,11 @@ EVENTBRITE_TOKEN=...
 
 # Supabase
 SUPABASE_URL=https://...
-SUPABASE_KEY=...  # app_admin_user password
+SUPABASE_PUBLISHABLE_KEY=...
 
-# Application
-ENVIRONMENT=development
-LOG_LEVEL=INFO
-CACHE_TTL_SECONDS=60
+# Django
+DJANGO_SECRET_KEY=...
+DEBUG=False
 ```
 
 ### Cloudflare Secrets
@@ -298,13 +160,14 @@ Set production secrets using Wrangler:
 
 ```bash
 wrangler secret put OPENAI_API_KEY
-wrangler secret put GEOAPIFY_API_KEY
+wrangler secret put GOOGLE_MAPS_API_KEY
 wrangler secret put SERPAPI_KEY
 wrangler secret put REDDIT_CLIENT_ID
 wrangler secret put REDDIT_CLIENT_SECRET
 wrangler secret put EVENTBRITE_TOKEN
 wrangler secret put SUPABASE_URL
-wrangler secret put SUPABASE_KEY
+wrangler secret put SUPABASE_PUBLISHABLE_KEY
+wrangler secret put DJANGO_SECRET_KEY
 ```
 
 ## 🌐 API Endpoints
@@ -312,7 +175,7 @@ wrangler secret put SUPABASE_KEY
 ### Health Check
 
 ```bash
-GET /health
+GET /api/health
 ```
 
 Returns service health and dependency status.
@@ -320,7 +183,7 @@ Returns service health and dependency status.
 ### Search
 
 ```bash
-POST /underfoot/search
+POST /api/search
 Content-Type: application/json
 
 {
@@ -346,6 +209,10 @@ wrangler deploy
 wrangler deploy --env production
 ```
 
+## 📊 Observability
+
+### Structured Logging
+
 All logs are JSON-formatted for easy parsing:
 
 ```json
@@ -363,6 +230,7 @@ All logs are JSON-formatted for easy parsing:
 ### Metrics
 
 Cloudflare Analytics automatically tracks:
+
 - Request count by endpoint
 - Response time distribution (P50, P90, P95, P99)
 - Error rate by type
@@ -371,6 +239,7 @@ Cloudflare Analytics automatically tracks:
 ### Alerts
 
 Configure alerts in Cloudflare dashboard:
+
 - Error rate >1% (5min window)
 - P95 latency >1s (5min window)
 - Cache hit rate <70% (15min window)
@@ -384,7 +253,7 @@ Configure alerts in Cloudflare dashboard:
 uv run pytest tests/unit/
 
 # Run with coverage
-uv run pytest tests/unit/ --cov=src/services
+uv run pytest tests/unit/ --cov=chat --cov=underfoot
 ```
 
 ### Integration Tests
@@ -412,30 +281,26 @@ uv run pytest tests/e2e/
 
 ## 📈 Performance Targets
 
-| Metric | Target | Current |
-|--------|--------|---------|
-| Cold Start | <100ms | TBD |
-| Warm Response (chat) | <200ms | TBD |
-| Warm Response (search) | <3s | TBD |
-| Cache Hit Rate | >80% | TBD |
-| P95 Latency | <500ms | TBD |
-| Error Rate | <0.1% | TBD |
+| Metric              | Target  | Current |
+| ------------------- | ------- | ------- |
+| Cold Start          | <100ms  | TBD     |
+| Warm Response (chat)| <200ms  | TBD     |
+| Warm Response (search)| <3s   | TBD     |
+| Cache Hit Rate      | >80%    | TBD     |
+| P95 Latency         | <500ms  | TBD     |
+| Error Rate          | <0.1%   | TBD     |
 
 ## 🤝 Contributing
 
 1. Follow the guidelines in `AGENTS.md`
 2. Write tests for all new features
-3. Ensure coverage >85%
+3. Ensure coverage >30%
 4. Run linting: `uv run ruff check .`
-5. Run type checking: `uv run mypy src/`
+5. Run type checking: `uv run mypy chat underfoot`
 6. Format code: `uv run black .`
 
 ## 📄 License
 
 See [LICENSE](../LICENSE) in the root directory.
 
----
-
-**Built with ❤️ using FastAPI, Cloudflare Workers, and Python 3.11+**
-
-_This document was generated with Verdent AI assistance._
+Built with ❤️ using Django, Cloudflare Workers, and Python 3.12+

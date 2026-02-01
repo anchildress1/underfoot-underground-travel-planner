@@ -6,6 +6,7 @@ name: Python Backend CI/CD
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
     branches: [main]
     paths:
       - 'backend/**'
@@ -19,6 +20,7 @@ concurrency:
 
 jobs:
   test:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -48,6 +50,16 @@ jobs:
 
       - name: Run tests with coverage
         working-directory: ./backend
+        env:
+          # Test environment variables - using dummy values for CI
+          OPENAI_API_KEY: "test-key"
+          GOOGLE_MAPS_API_KEY: "test-key"
+          SERPAPI_KEY: "test-key"
+          REDDIT_CLIENT_ID: "test-id"
+          REDDIT_CLIENT_SECRET: "test-secret"
+          EVENTBRITE_TOKEN: "test-token"
+          SUPABASE_URL: "https://test.supabase.co"
+          SUPABASE_PUBLISHABLE_KEY: "test-key"
         run: |
           uv run pytest --cov=chat --cov=underfoot --cov=manage.py --cov-report=xml --cov-report=term-missing
 
@@ -58,15 +70,18 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         continue-on-error: true
-        if: secrets.CODECOV_TOKEN != ''
+        if: env.CODECOV_TOKEN != ''
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ env.CODECOV_TOKEN }}
           files: ./backend/coverage.xml
           flags: python-backend
           name: python-backend-coverage
           fail_ci_if_error: false
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   lint:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -105,6 +120,7 @@ jobs:
           uv run mypy chat underfoot manage.py
 
   security:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -151,49 +167,3 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
           compression-level: 9
-
-  deploy:
-    needs: [test, lint, security]
-    if: github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      contents: read
-      deployments: write
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v5
-        with:
-          enable-cache: true
-          cache-dependency-glob: "backend/uv.lock"
-
-      - name: Set up Python
-        run: uv python install 3.12
-
-      - name: Export requirements
-        working-directory: ./backend
-        run: |
-          uv export --format requirements-txt --output-file requirements.txt --no-hashes
-
-      - name: Deploy to Cloudflare Workers
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          workingDirectory: backend
-          command: deploy --config wrangler.toml
-
-      - name: Create deployment notification
-        if: success()
-        run: |
-          echo "✅ Python backend deployed successfully to Cloudflare Workers"
-          echo "🔗 URL: https://underfoot-python-backend.workers.dev"
-
-      - name: Notify on failure
-        if: failure()
-        run: |
-          echo "❌ Deployment failed. Check logs for details."

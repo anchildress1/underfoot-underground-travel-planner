@@ -19,7 +19,7 @@ help:
 	@echo "  make clean            - Clean build artifacts"
 	@echo "  make ai-checks        - Run all checks (format, lint, test)"
 
-ai-checks: test
+ai-checks: install test
 
 
 # Development
