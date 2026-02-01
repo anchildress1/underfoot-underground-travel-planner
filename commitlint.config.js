@@ -9,9 +9,11 @@ export default {
   rules: {
     'header-trim': [2, 'always'],
     'type-case': [2, 'always', 'lower-case'],
+    'scope-empty': [2, 'never'],
     'scope-case': [2, 'always', 'lower-case'],
     'subject-case': [2, 'always', 'lower-case'],
     'body-leading-blank': [2, 'always'],
+    'body-empty': [2, 'never'],
     'body-max-line-length': [2, 'always', 100],
     'footer-max-line-length': [2, 'always', 100],
     'rai-footer-exists': [2, 'always'],
