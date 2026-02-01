@@ -19,15 +19,15 @@ fi
 
 # Run tests before deployment
 echo "🧪 Running tests..."
-poetry run pytest
+uv run pytest
 
 # Run linting
 echo "🔍 Running linting..."
-poetry run ruff check .
+uv run ruff check .
 
 # Export requirements for Cloudflare Workers
 echo "📦 Exporting requirements..."
-poetry export -f requirements.txt --output requirements.txt --without-hashes
+uv export --format requirements-txt --output-file requirements.txt --no-hashes
 
 # Deploy to Cloudflare
 echo "🚀 Deploying to Cloudflare Workers..."

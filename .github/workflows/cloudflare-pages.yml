@@ -19,6 +19,8 @@ concurrency:
 
 permissions:
   contents: read
+  actions: read
+  id-token: write
   deployments: write
 
 jobs:
@@ -54,20 +56,19 @@ jobs:
           mkdir -p backend/static
           cp -r frontend/dist/* backend/static/
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          python-version: '3.11'
+          enable-cache: true
+          cache-dependency-glob: "backend/uv.lock"
 
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Set up Python
+        run: uv python install 3.12
 
       - name: Export requirements
         working-directory: ./backend
         run: |
-          poetry export -f requirements.txt --output requirements.txt --without-hashes
+          uv export --format requirements-txt --output-file requirements.txt --no-hashes
 
       - name: Deploy Worker with static assets
         uses: cloudflare/wrangler-action@v3
