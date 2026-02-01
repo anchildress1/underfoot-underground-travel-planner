@@ -5,8 +5,8 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
-      day: monday
-      time: "03:00"
+      day: sunday
+      time: "22:07"
     open-pull-requests-limit: 2
     labels:
       - dependencies
@@ -30,8 +30,8 @@ updates:
     directory: "/backend"
     schedule:
       interval: weekly
-      day: monday
-      time: "03:00"
+      day: sunday
+      time: "22:07"
     open-pull-requests-limit: 2
     labels:
       - dependencies
@@ -54,8 +54,8 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
-      day: monday
-      time: "03:30"
+      day: sunday
+      time: "22:07"
     open-pull-requests-limit: 2
     labels:
       - dependencies
