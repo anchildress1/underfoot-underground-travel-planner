@@ -17,5 +17,6 @@ export default {
     'body-max-line-length': [2, 'always', 100],
     'footer-max-line-length': [2, 'always', 100],
     'rai-footer-exists': [2, 'always'],
+    'signed-off-by': [1, 'always'],
   },
 };
