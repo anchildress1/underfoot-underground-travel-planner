@@ -26,7 +26,7 @@ export default defineConfig([
     '**/.worktrees/**',
     'frontend/screenshot.js',
     'frontend/vitest.setup.js',
-    // Frontend has its own eslint config (.eslintrc.json)
+    // Frontend has its own ESLint flat config (frontend/eslint.config.js)
     'frontend/**',
   ]),
   js.configs.recommended,
