@@ -54,13 +54,12 @@ describe('Header', () => {
 
   it('should highlight debug button when debug mode active', () => {
     const { rerender } = render(<Header {...defaultProps} debugMode={false} />);
-    let debugButton = screen.getByLabelText(/debug mode/i);
-    let initialClass = debugButton.className;
+    const debugButton = screen.getByLabelText(/debug mode/i);
+    const initialClass = debugButton.className;
 
     rerender(<Header {...defaultProps} debugMode={true} />);
-    debugButton = screen.getByLabelText(/debug mode/i);
 
-    expect(debugButton.className).not.toBe(initialClass);
+    expect(screen.getByLabelText(/debug mode/i).className).not.toBe(initialClass);
   });
 
   it('should show Moon icon in light theme', () => {

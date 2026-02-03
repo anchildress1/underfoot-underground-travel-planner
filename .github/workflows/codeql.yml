@@ -46,7 +46,7 @@ jobs:
       # Query syntax remains compatible: security-extended,security-and-quality
       # https://github.blog/changelog/2025-10-28-upcoming-deprecation-of-codeql-action-v3/
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
+        uses: github/codeql-action/init@f116a11b3d2ec2f382b4a6530d51b8f4cf136fee # v4.32.1
         with:
           languages: ${{ matrix.language }}
           # Enable additional queries for better security coverage
@@ -62,6 +62,6 @@ jobs:
         run: npm install --ignore-scripts
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4
+        uses: github/codeql-action/analyze@f116a11b3d2ec2f382b4a6530d51b8f4cf136fee # v4.32.1
         with:
           category: '/language:${{matrix.language}}'

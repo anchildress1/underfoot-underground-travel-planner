@@ -119,7 +119,6 @@ describe('ChatInput', () => {
   });
 
   it('should enforce character limit', async () => {
-    const user = userEvent.setup();
     render(<ChatInput {...defaultProps} />);
 
     const textarea = screen.getByPlaceholderText(/ask the stonewalker/i);

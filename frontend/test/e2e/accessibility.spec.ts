@@ -18,13 +18,11 @@ test.describe('Accessibility E2E', () => {
   test('should be keyboard navigable', async ({ page }) => {
     await page.keyboard.press('Tab');
 
-    const themeButton = page.getByRole('button', { name: /Switch to/ });
-    // await expect(themeButton).toBeFocused();
+    // await expect(page.getByRole('button', { name: /Switch to/ })).toBeFocused();
 
     await page.keyboard.press('Tab');
 
-    const debugButton = page.getByRole('button', { name: /debug mode/i });
-    // await expect(debugButton).toBeFocused();
+    // await expect(page.getByRole('button', { name: /debug mode/i })).toBeFocused();
 
     for (let i = 0; i < 5; i++) {
       await page.keyboard.press('Tab');
@@ -54,8 +52,7 @@ test.describe('Accessibility E2E', () => {
 
     await page.getByRole('button', { name: 'Send message' }).click();
 
-    const sendButton = page.getByRole('button', { name: 'Send message' });
-    // await expect(sendButton).toHaveAttribute('aria-busy', 'true');
+    // await expect(page.getByRole('button', { name: 'Send message' })).toHaveAttribute('aria-busy', 'true');
 
     await expect(page.getByText(/test query/i)).toBeVisible({ timeout: 5000 });
 

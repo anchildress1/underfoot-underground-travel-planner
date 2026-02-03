@@ -114,7 +114,7 @@ describe('MessageBubble', () => {
   });
 
   it('should highlight selected place', () => {
-    const { container } = render(
+    render(
       <MessageBubble
         message={mockAssistantMessage}
         selectedPlace="place-1"
@@ -129,7 +129,7 @@ describe('MessageBubble', () => {
   });
 
   it('should not highlight unselected place', () => {
-    const { container } = render(
+    render(
       <MessageBubble
         message={mockAssistantMessage}
         selectedPlace="other-place"

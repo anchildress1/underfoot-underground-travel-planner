@@ -55,8 +55,7 @@ test.describe('Search Flow E2E', () => {
     await page.getByRole('button', { name: 'Send message' }).click();
     await expect(page.getByText('underground tours virginia')).toBeVisible();
 
-    const messages = page.locator('[role="article"]');
-    // await expect(messages).toHaveCount(4);
+    // await expect(page.locator('[role="article"]')).toHaveCount(4);
   });
 
   test('should clear input after sending message', async ({ page }) => {

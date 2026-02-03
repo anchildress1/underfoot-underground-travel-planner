@@ -40,7 +40,7 @@ export function GoogleMapView({
   zoom,
   selectedPlaceId,
   onPlaceSelect,
-  onMapChange,
+  onMapChange: _onMapChange,
 }: GoogleMapViewProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const googleMapRef = useRef<google.maps.Map | null>(null);

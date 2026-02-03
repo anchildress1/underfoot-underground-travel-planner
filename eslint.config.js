@@ -4,10 +4,14 @@ import globals from 'globals';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import react from 'eslint-plugin-react';
+import unicorn from 'eslint-plugin-unicorn';
 
 export default defineConfig([
   globalIgnores([
     '**/dist/**',
+    '**/node_modules/**',
+    '**/.venv/**',
+    '**/htmlcov/**',
     '**/*.md',
     '**/*.mmd',
     '**/.env*',
@@ -22,8 +26,11 @@ export default defineConfig([
     '**/.worktrees/**',
     'frontend/screenshot.js',
     'frontend/vitest.setup.js',
+    // Frontend has its own ESLint flat config (frontend/eslint.config.js)
+    'frontend/**',
   ]),
   js.configs.recommended,
+  unicorn.configs.recommended,
   {
     languageOptions: {
       ecmaVersion: 2024,
@@ -34,58 +41,14 @@ export default defineConfig([
       curly: ['error', 'all'],
       'func-style': ['error', 'expression', { allowArrowFunctions: true }],
       'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-    },
-  },
-  {
-    files: ['frontend/src/**/*.{js,jsx}'],
-    extends: [reactHooks.configs['recommended-latest'], reactRefresh.configs.vite],
-    plugins: {
-      react,
-    },
-    settings: {
-      react: {
-        version: 'detect',
-      },
-    },
-    languageOptions: {
-      globals: {
-        ...globals.browser,
-      },
-      parserOptions: {
-        ecmaVersion: 'latest',
-        ecmaFeatures: { jsx: true },
-        sourceType: 'module',
-      },
-    },
-    rules: {
-      'react/jsx-uses-react': 'off', // Not needed in React 17+
-      'react/jsx-uses-vars': 'error', // Detects JSX usage of variables
-    },
-  },
-  {
-    files: ['frontend/src/__tests__/**/*', 'frontend/tests-e2e/**/*'],
-    languageOptions: {
-      globals: {
-        ...globals.vitest,
-        global: 'writable',
-      },
-    },
-    rules: {
-      'no-restricted-syntax': [
-        'error',
-        {
-          selector: 'CatchClause',
-          message:
-            'Do not use catch statements in test files. Use expect(...).rejects or .toThrow() for error assertions.',
-        },
-      ],
-      // Allow unused vars in tests (helpers, parameter documentation, etc.).
-      'no-unused-vars': [
-        'off',
-        {
-          argsIgnorePattern: '^_',
-        },
-      ],
+      // Prevent commented-out code
+      'no-unused-labels': 'error',
+      'no-unreachable': 'error',
+      // Ban eslint-disable comments
+      'no-warning-comments': ['error', { terms: ['eslint-disable'], location: 'anywhere' }],
+      // Unicorn rules for code quality
+      'unicorn/no-unused-properties': 'error',
+      'unicorn/no-abusive-eslint-disable': 'error',
     },
   },
   {
@@ -135,18 +98,6 @@ export default defineConfig([
         ...globals.vitest,
         global: 'writable',
       },
-    },
-  },
-  {
-    ignores: ['**/*.config.js', 'frontend/**/*', 'scripts/**/*'],
-    rules: {
-      'func-style': ['error', 'expression', { allowArrowFunctions: true }],
-    },
-  },
-  {
-    files: ['frontend/src/**/*.{js,jsx}', 'backend/src/**/*.js', 'scripts/**/*.js'],
-    rules: {
-      'no-warning-comments': ['error', { terms: ['eslint-disable'], location: 'anywhere' }],
     },
   },
 ]);
