@@ -4,6 +4,7 @@ import globals from 'globals';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import react from 'eslint-plugin-react';
+import unicorn from 'eslint-plugin-unicorn';
 
 export default defineConfig([
   globalIgnores([
@@ -29,6 +30,7 @@ export default defineConfig([
     'frontend/**',
   ]),
   js.configs.recommended,
+  unicorn.configs.recommended,
   {
     languageOptions: {
       ecmaVersion: 2024,
@@ -39,6 +41,14 @@ export default defineConfig([
       curly: ['error', 'all'],
       'func-style': ['error', 'expression', { allowArrowFunctions: true }],
       'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      // Prevent commented-out code
+      'no-unused-labels': 'error',
+      'no-unreachable': 'error',
+      // Ban eslint-disable comments
+      'no-warning-comments': ['error', { terms: ['eslint-disable'], location: 'anywhere' }],
+      // Unicorn rules for code quality
+      'unicorn/no-unused-properties': 'error',
+      'unicorn/no-abusive-eslint-disable': 'error',
     },
   },
   {
@@ -88,12 +98,6 @@ export default defineConfig([
         ...globals.vitest,
         global: 'writable',
       },
-    },
-  },
-  {
-    files: ['scripts/**/*.js'],
-    rules: {
-      'no-warning-comments': ['error', { terms: ['eslint-disable'], location: 'anywhere' }],
     },
   },
 ]);
