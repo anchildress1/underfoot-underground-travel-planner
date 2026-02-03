@@ -3,9 +3,9 @@ import { renderHook } from '@testing-library/react';
 import { useKeyboardNavigation } from '../../src/hooks/useKeyboardNavigation';
 
 describe('useKeyboardNavigation', () => {
-  let mockOnSubmit: ReturnType<typeof vi.fn>;
-  let mockOnToggleDebug: ReturnType<typeof vi.fn>;
-  let mockOnToggleTheme: ReturnType<typeof vi.fn>;
+  let mockOnSubmit: () => void;
+  let mockOnToggleDebug: () => void;
+  let mockOnToggleTheme: () => void;
 
   beforeEach(() => {
     mockOnSubmit = vi.fn();

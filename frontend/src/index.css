@@ -1,6 +1,93 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@theme {
+  --font-family-heading: 'Orbitron', monospace;
+  --font-family-brand: 'Flavors', 'Kablam', 'Frijole', display;
+  --font-family-body: 'Inter', sans-serif;
+  --font-family-mono: 'JetBrains Mono', monospace;
+
+  --color-cyber-50: #eff6ff;
+  --color-cyber-100: #dbeafe;
+  --color-cyber-200: #bfdbfe;
+  --color-cyber-300: #93c5fd;
+  --color-cyber-400: #60a5fa;
+  --color-cyber-500: #3b82f6;
+  --color-cyber-600: #2563eb;
+  --color-cyber-700: #1d4ed8;
+  --color-cyber-800: #1e40af;
+  --color-cyber-900: #1e3a8a;
+
+  --color-neon-50: #f0f9ff;
+  --color-neon-100: #e0f2fe;
+  --color-neon-200: #bae6fd;
+  --color-neon-300: #7dd3fc;
+  --color-neon-400: #38bdf8;
+  --color-neon-500: #0ea5e9;
+  --color-neon-600: #0284c7;
+  --color-neon-700: #0369a1;
+  --color-neon-800: #075985;
+  --color-neon-900: #0c4a6e;
+
+  --color-mystic-50: #faf5ff;
+  --color-mystic-100: #f3e8ff;
+  --color-mystic-200: #e9d5ff;
+  --color-mystic-300: #d8b4fe;
+  --color-mystic-400: #c084fc;
+  --color-mystic-500: #a855f7;
+  --color-mystic-600: #9333ea;
+  --color-mystic-700: #7c3aed;
+  --color-mystic-800: #6b21a8;
+  --color-mystic-900: #581c87;
+
+  --color-matrix-50: #f0fdf4;
+  --color-matrix-100: #dcfce7;
+  --color-matrix-200: #bbf7d0;
+  --color-matrix-300: #86efac;
+  --color-matrix-400: #4ade80;
+  --color-matrix-500: #22c55e;
+  --color-matrix-600: #16a34a;
+  --color-matrix-700: #15803d;
+  --color-matrix-800: #166534;
+  --color-matrix-900: #14532d;
+
+  --color-void-50: #f8fafc;
+  --color-void-100: #f1f5f9;
+  --color-void-200: #e2e8f0;
+  --color-void-300: #cbd5e1;
+  --color-void-400: #94a3b8;
+  --color-void-500: #64748b;
+  --color-void-600: #475569;
+  --color-void-700: #334155;
+  --color-void-800: #1e293b;
+  --color-void-900: #0f172a;
+
+  --animate-glow: glow 2s ease-in-out infinite alternate;
+  --animate-steam: steam 3s ease-in-out infinite;
+  --animate-gear: spin 20s linear infinite;
+
+  @keyframes glow {
+    0% {
+      box-shadow: 0 0 5px var(--color-cyber-400);
+    }
+    100% {
+      box-shadow:
+        0 0 20px var(--color-cyber-400),
+        0 0 30px var(--color-neon-400);
+    }
+  }
+
+  @keyframes steam {
+    0%,
+    100% {
+      transform: translateY(0) scale(1);
+      opacity: 0.7;
+    }
+    50% {
+      transform: translateY(-10px) scale(1.1);
+      opacity: 1;
+    }
+  }
+}
 
 @layer base {
   html {
@@ -15,7 +102,7 @@
 @layer components {
   .cyber-border {
     position: relative;
-    background: linear-gradient(45deg, theme(colors.cyber.600), theme(colors.neon.600));
+    background: linear-gradient(45deg, var(--color-cyber-600), var(--color-neon-600));
     padding: 2px;
     border-radius: 8px;
     pointer-events: none;
@@ -31,9 +118,9 @@
     inset: 0;
     background: conic-gradient(
       from 0deg,
-      theme(colors.cyber.400),
-      theme(colors.mystic.400),
-      theme(colors.neon.400)
+      var(--color-cyber-400),
+      var(--color-mystic-400),
+      var(--color-neon-400)
     );
     border-radius: inherit;
     padding: 1px;
@@ -54,7 +141,7 @@
     top: -8px;
     right: -8px;
     font-size: 16px;
-    color: theme(colors.cyber.500);
+    color: var(--color-cyber-500);
     animation: gear 20s linear infinite;
   }
 
@@ -84,7 +171,7 @@
 
   .scroll-area {
     scrollbar-width: thin;
-    scrollbar-color: theme(colors.cyber.400) transparent;
+    scrollbar-color: var(--color-cyber-400) transparent;
   }
 
   .scroll-area::-webkit-scrollbar {
@@ -96,12 +183,12 @@
   }
 
   .scroll-area::-webkit-scrollbar-thumb {
-    background: theme(colors.cyber.400);
+    background: var(--color-cyber-400);
     border-radius: 3px;
   }
 
   .scroll-area::-webkit-scrollbar-thumb:hover {
-    background: theme(colors.cyber.500);
+    background: var(--color-cyber-500);
   }
 }
 

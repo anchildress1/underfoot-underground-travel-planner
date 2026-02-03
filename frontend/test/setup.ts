@@ -1,4 +1,4 @@
-import { expect, afterEach, vi } from 'vitest';
+import { expect, afterEach, vi, beforeAll, afterAll } from 'vitest';
 import { cleanup } from '@testing-library/react';
 import * as matchers from '@testing-library/jest-dom/matchers';
 
@@ -32,7 +32,7 @@ afterAll(() => {
   console.error = originalError;
 });
 
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
+globalThis.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn(),
@@ -63,7 +63,7 @@ Object.defineProperty(window, 'localStorage', {
 });
 
 // Mock Google Maps API
-(global as any).google = {
+(globalThis as { google?: typeof google }).google = {
   maps: {
     Map: vi.fn(() => ({
       setCenter: vi.fn(),
@@ -81,7 +81,7 @@ Object.defineProperty(window, 'localStorage', {
     Size: vi.fn((width, height) => ({ width, height })),
     Point: vi.fn((x, y) => ({ x, y })),
     Animation: {
-      DROP: 'DROP',
+      DROP: 'DROP' as unknown as google.maps.Animation,
     },
   },
-};
+} as unknown as typeof google;
