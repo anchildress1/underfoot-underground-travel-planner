@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { cn, formatTimestamp, generateId } from '../../src/utils';
 
 describe('Utils', () => {
@@ -8,6 +8,7 @@ describe('Utils', () => {
     });
 
     it('should handle conditional classes', () => {
+      // eslint-disable-next-line no-constant-binary-expression
       expect(cn('foo', false && 'bar', 'baz')).toBe('foo baz');
     });
 

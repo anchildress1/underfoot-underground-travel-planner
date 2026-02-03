@@ -149,7 +149,6 @@ test.describe('Map Interaction E2E', () => {
 
   test('should persist map state across multiple searches', async ({ page, context }) => {
     await context.route('**/underfoot/search', (route) => {
-      const url = new URL(route.request().url());
       const body = route.request().postDataJSON();
 
       if (body.chat_input.includes('grundy')) {

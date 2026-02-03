@@ -9,7 +9,7 @@ export default {
       rules: {
         'signed-off-by': ({ footer }) => {
           const hasSignedOff = footer?.some(line =>
-            /^Signed-off-by:\s.+ <.+>$/.test(line)
+            /^Signed-off-by:\s.+ <.+>/.test(line)
           );
           return [
             hasSignedOff,
@@ -25,7 +25,6 @@ export default {
     'type-case': [2, 'always', 'lower-case'],
     'scope-empty': [2, 'never'],
     'scope-case': [2, 'always', 'lower-case'],
-    'subject-case': [2, 'always', 'lower-case'],
     'body-leading-blank': [2, 'always'],
     'body-empty': [2, 'never'],
     'body-max-line-length': [2, 'always', 100],

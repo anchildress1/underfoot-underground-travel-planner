@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, waitFor } from '../utils/test-utils';
+import { render } from '../utils/test-utils';
 import { MessageBubble } from '../../src/components/MessageBubble';
 import { ChatArea } from '../../src/components/ChatArea';
 import { Message, Place } from '../../src/types';
