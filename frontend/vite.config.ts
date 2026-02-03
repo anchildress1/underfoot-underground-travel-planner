@@ -1,11 +1,9 @@
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
-import { resolve } from 'path';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   return {
-    envDir: resolve(__dirname, '..'),
     plugins: [
       react(),
       {
@@ -39,12 +37,13 @@ export default defineConfig(({ mode }) => {
           'test/',
           '**/*.d.ts',
           '**/*.config.*',
-          '**/mockData.ts',
           'dist/',
           'src/main.tsx',
+          'src/App.tsx',
           'src/types/**',
+          'src/data/**',
           'src/services/googlePlaces.ts',
-          'src/services/api.ts',
+          'src/services/mock*.ts',
           'src/components/MapView.tsx',
           'src/components/GoogleMapView.tsx',
         ],

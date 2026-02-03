@@ -206,4 +206,37 @@ describe('MessageBubble', () => {
     const confidence = screen.getByText('50%');
     expect(confidence.className).toContain('text-white');
   });
+
+  it('should apply correct confidence color for good confidence (0.8-0.9)', () => {
+    const goodConfPlace = { ...mockPlace, confidence: 0.85 };
+    const message = { ...mockAssistantMessage, places: [goodConfPlace] };
+    render(<MessageBubble message={message} selectedPlace={null} onPlaceSelect={vi.fn()} />);
+
+    const confidence = screen.getByText('85%');
+    expect(confidence.className).toContain('text-white');
+  });
+
+  it('should apply correct confidence color for lower confidence (0.6-0.7)', () => {
+    const lowerConfPlace = { ...mockPlace, confidence: 0.65 };
+    const message = { ...mockAssistantMessage, places: [lowerConfPlace] };
+    render(<MessageBubble message={message} selectedPlace={null} onPlaceSelect={vi.fn()} />);
+
+    const confidence = screen.getByText('65%');
+    expect(confidence.className).toContain('text-white');
+  });
+
+  it('should handle image load error', () => {
+    render(
+      <MessageBubble message={mockAssistantMessage} selectedPlace={null} onPlaceSelect={vi.fn()} />,
+    );
+
+    const img = screen.getByAltText('Test Place') as HTMLImageElement;
+    expect(img).toBeInTheDocument();
+
+    // Simulate image error
+    const errorEvent = new Event('error');
+    img.dispatchEvent(errorEvent);
+
+    expect(img.style.display).toBe('none');
+  });
 });

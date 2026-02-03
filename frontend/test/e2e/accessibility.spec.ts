@@ -83,7 +83,7 @@ test.describe('Accessibility E2E', () => {
         value: (query: string) => ({
           matches: query.includes('prefers-reduced-motion: reduce'),
           media: query,
-          onchange: null,
+          onchange: null as (() => void) | null,
           addListener: () => {},
           removeListener: () => {},
           addEventListener: () => {},

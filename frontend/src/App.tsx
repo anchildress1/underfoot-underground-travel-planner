@@ -176,7 +176,7 @@ function App() {
             places={allPlaces}
             center={mapCenter}
             zoom={mapZoom}
-            selectedPlaceId={selectedPlace}
+            selectedPlaceId={selectedPlace ?? undefined}
             onPlaceSelect={handlePlaceSelect}
             onMapChange={handleMapChange}
           />

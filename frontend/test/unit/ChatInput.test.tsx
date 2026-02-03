@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 
 vi.mock('../../src/hooks/useKeyboardNavigation', () => ({
   useKeyboardNavigation: () => ({
-    inputRef: { current: null },
+    inputRef: { current: null as HTMLTextAreaElement | null },
   }),
 }));
 
@@ -124,5 +124,17 @@ describe('ChatInput', () => {
     const textarea = screen.getByPlaceholderText(/ask the stonewalker/i);
 
     expect(textarea).toHaveAttribute('maxlength', '1000');
+  });
+
+  it('should not submit on Shift+Enter', async () => {
+    const user = userEvent.setup();
+    const onSendMessage = vi.fn();
+    render(<ChatInput {...defaultProps} onSendMessage={onSendMessage} />);
+
+    const textarea = screen.getByPlaceholderText(/ask the stonewalker/i);
+    await user.type(textarea, 'Test message');
+    await user.keyboard('{Shift>}{Enter}{/Shift}');
+
+    expect(onSendMessage).not.toHaveBeenCalled();
   });
 });
