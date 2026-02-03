@@ -11,7 +11,6 @@ updates:
     rebase-strategy: auto
     labels:
       - dependencies
-      - npm
     commit-message:
       prefix: "chore(deps)"
     allow:
@@ -41,8 +40,6 @@ updates:
     rebase-strategy: auto
     labels:
       - dependencies
-      - python
-      - backend
     commit-message:
       prefix: "chore(deps)"
     allow:
@@ -70,7 +67,6 @@ updates:
     rebase-strategy: auto
     labels:
       - dependencies
-      - github-actions
     commit-message:
       prefix: "chore(ci)"
     allow:
