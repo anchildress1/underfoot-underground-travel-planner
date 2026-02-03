@@ -56,7 +56,7 @@ jobs:
       # If hidden files needed (e.g., .nyc_output/), add: include-hidden-files: true
       - name: Upload unit test coverage
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: coverage-frontend
           path: frontend/coverage
@@ -66,7 +66,7 @@ jobs:
 
       # Cache Playwright browsers to speed up e2e tests
       - name: Cache Playwright browsers
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
@@ -83,7 +83,7 @@ jobs:
 
       - name: Upload Playwright report
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: playwright-report
           path: frontend/playwright-report
