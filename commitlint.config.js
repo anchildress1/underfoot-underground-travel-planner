@@ -7,14 +7,14 @@ export default {
   plugins: ['@checkmarkdevtools/commitlint-plugin-rai',
     {
       rules: {
-        'signed-off-by': ({ footer }) => {
-          const hasSignedOff = footer?.some(line =>
-            /^Signed-off-by:\s.+ <.+>/.test(line)
-          );
-          return [
-            hasSignedOff,
-            'commit message must include a Signed-off-by footer',
-          ];
+        'signed-off-by': (parsed) => {
+          const { body, footer } = parsed;
+          const regex = /^Signed-off-by:\s.+ <.+>/m;
+          const hasSignedOff =
+            (footer && (Array.isArray(footer) ? footer.some((l) => regex.test(l)) : regex.test(footer))) ||
+            (body && regex.test(body));
+
+          return [!!hasSignedOff, 'commit message must include a Signed-off-by footer'];
         },
       },
     },
