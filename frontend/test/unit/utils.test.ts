@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { cn, formatTimestamp, generateId } from '../../src/utils';
+import { cn, formatTimestamp, generateId, pluralize } from '../../src/utils';
 
 describe('Utils', () => {
   describe('cn', () => {
@@ -75,6 +75,29 @@ describe('Utils', () => {
       const ids = Array.from({ length: 100 }, () => generateId());
       const uniqueIds = new Set(ids);
       expect(uniqueIds.size).toBe(100);
+    });
+  });
+
+  describe('pluralize', () => {
+    it('should return singular for count of 1', () => {
+      expect(pluralize(1, 'item')).toBe('item');
+    });
+
+    it('should return plural for count of 0', () => {
+      expect(pluralize(0, 'item')).toBe('items');
+    });
+
+    it('should return plural for count greater than 1', () => {
+      expect(pluralize(5, 'item')).toBe('items');
+    });
+
+    it('should use custom plural when provided', () => {
+      expect(pluralize(0, 'person', 'people')).toBe('people');
+      expect(pluralize(2, 'person', 'people')).toBe('people');
+    });
+
+    it('should use singular when count is 1 even with custom plural', () => {
+      expect(pluralize(1, 'person', 'people')).toBe('person');
     });
   });
 });

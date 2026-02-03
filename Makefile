@@ -17,9 +17,9 @@ help:
 	@echo "  make test             - Run all tests"
 	@echo "  make typecheck        - Type check all code"
 	@echo "  make clean            - Clean build artifacts"
-	@echo "  make ai-checks        - Run all checks (format, lint, test)"
+	@echo "  make ai-checks        - Run all checks (format, lint, typecheck, test)"
 
-ai-checks: install test
+ai-checks: install typecheck test
 
 
 # Development
