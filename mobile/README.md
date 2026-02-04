@@ -1,6 +1,6 @@
 # Underfoot Mobile
 
-Flutter frontend for the Underfoot Underground Travel Planner.
+Flutter mobile app for the Underfoot Underground Travel Planner.
 
 ## Features
 
@@ -10,30 +10,45 @@ Flutter frontend for the Underfoot Underground Travel Planner.
 - 🗺️ Google Maps integration (native) / Custom map view (web)
 - ♿ WCAG AA accessibility compliance
 - 🎯 BLoC state management
-- ✅ Comprehensive test suite (35+ tests)
+- ✅ Comprehensive test suite (58+ tests)
 
 ## Prerequisites
 
 - Flutter SDK 3.29+ ([Install Flutter](https://docs.flutter.dev/get-started/install))
 - For iOS development: Xcode with iOS 12.0+ support
 - For Android development: Android Studio with API level 21+
-- Backend running at `localhost:8000`
+- Backend running (see below)
 
 ## Quick Start
 
+### Web Development
 ```bash
-# Install dependencies
-flutter pub get
+# From repo root
+make dev
 
-# Run on web (Chrome)
+# Or manually
+cd mobile
 flutter run -d chrome
-
-# Run on iOS simulator
-flutter run -d ios
-
-# Run on Android emulator
-flutter run -d android
 ```
+
+### Test on Android Device
+
+**Quick Setup (Automated):**
+```bash
+cd mobile
+./setup-android-test.sh
+```
+
+**Manual Setup:**
+1. Connect Android device via USB with debugging enabled
+2. Find your local IP: `ipconfig getifaddr en0` (macOS)
+3. Update `lib/core/constants/env_config.dart`:
+   ```dart
+   defaultValue: 'http://YOUR_IP:8000'  // e.g., 'http://192.168.1.100:8000'
+   ```
+4. Run: `flutter run`
+
+See [TESTING.md](TESTING.md) for complete Android testing & deployment guide.
 
 ## Development Commands
 
