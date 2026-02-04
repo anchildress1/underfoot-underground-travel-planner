@@ -23,7 +23,7 @@ def health(request: HttpRequest) -> Any:
     return health_async(request)
 
 
-async def health_async(_request: HttpRequest) -> dict[str, Any]:
+async def health_async(request: HttpRequest) -> dict[str, Any]:  # noqa: ARG001
     start = time.perf_counter()
     dependencies = {}
     try:
@@ -42,7 +42,7 @@ async def health_async(_request: HttpRequest) -> dict[str, Any]:
 
 
 @router.post("/search", response={200: SearchResponse, 500: ErrorResponse})
-async def search(_request: HttpRequest, data: SearchRequest) -> Any:
+async def search(request: HttpRequest, data: SearchRequest) -> Any:  # noqa: ARG001
     """Execute search with AI orchestration."""
     try:
         sanitized_input = InputSanitizer.sanitize(data.chat_input)
