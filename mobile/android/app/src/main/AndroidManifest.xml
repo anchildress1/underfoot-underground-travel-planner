@@ -3,6 +3,12 @@
         android:label="underfoot_mobile"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        
+        <!-- Google Maps API Key -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${GOOGLE_MAPS_API_KEY}" />
+        
         <activity
             android:name=".MainActivity"
             android:exported="true"

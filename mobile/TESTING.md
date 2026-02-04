@@ -1,5 +1,19 @@
 # Android Testing & Deployment Guide
 
+## Prerequisites
+
+### Google Maps API Key (Required for Android)
+
+The app requires a Google Maps API key to run on Android. See [GOOGLE_MAPS_SETUP.md](GOOGLE_MAPS_SETUP.md) for complete setup instructions.
+
+**Quick setup:**
+1. Get API key from [Google Cloud Console](https://console.cloud.google.com/)
+2. Enable "Maps SDK for Android"
+3. Add to `mobile/android/local.properties`:
+   ```
+   GOOGLE_MAPS_API_KEY=YOUR_KEY_HERE
+   ```
+
 ## Quick Test on Android Device
 
 ### Prerequisites
