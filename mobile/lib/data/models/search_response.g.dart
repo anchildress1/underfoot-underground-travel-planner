@@ -16,7 +16,7 @@ SearchRequest _$SearchRequestFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$SearchRequestToJson(SearchRequest instance) =>
     <String, dynamic>{
       'chat_input': instance.chatInput,
-      'user_location': instance.userLocation,
+      'user_location': ?instance.userLocation,
       'force': instance.force,
     };
 

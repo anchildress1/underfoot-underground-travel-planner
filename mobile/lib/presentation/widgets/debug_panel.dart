@@ -97,7 +97,7 @@ class DebugPanel extends StatelessWidget {
             debugInfo!.dataSources!.isNotEmpty)
           _buildRow('Sources', debugInfo!.dataSources!.join(', ')),
         if (debugInfo!.cache != null)
-          _buildRow('Cache', debugInfo!.cache!.hit == true ? 'HIT' : 'MISS'),
+          _buildRow('Cache', debugInfo!.cache!.toUpperCase()),
         if (debugInfo!.geospatialData != null) ...[
           _buildRow('Center', debugInfo!.geospatialData!.centerLabel),
           _buildRow('Radius', debugInfo!.geospatialData!.radiusLabel),

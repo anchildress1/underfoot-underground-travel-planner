@@ -11,10 +11,13 @@ class DebugInfo extends Equatable {
   @JsonKey(name: 'execution_time_ms')
   final int? executionTimeMs;
 
-  final CacheInfo? cache;
+  final String? cache;
 
   @JsonKey(name: 'upstream_status')
-  final Map<String, dynamic>? upstreamStatus;
+  final int? upstreamStatus;
+
+  @JsonKey(name: 'upstream_error')
+  final String? upstreamError;
 
   @JsonKey(name: 'search_query')
   final String? searchQuery;
@@ -40,6 +43,7 @@ class DebugInfo extends Equatable {
     this.executionTimeMs,
     this.cache,
     this.upstreamStatus,
+    this.upstreamError,
     this.searchQuery,
     this.confidence,
     this.keywords,
@@ -66,6 +70,7 @@ class DebugInfo extends Equatable {
     executionTimeMs,
     cache,
     upstreamStatus,
+    upstreamError,
     searchQuery,
     confidence,
     keywords,
@@ -91,22 +96,6 @@ class ToolCallInfo extends Equatable {
 
   @override
   List<Object?> get props => [name, count, durationMs];
-}
-
-@JsonSerializable()
-class CacheInfo extends Equatable {
-  final bool? hit;
-  final String? key;
-
-  const CacheInfo({this.hit, this.key});
-
-  factory CacheInfo.fromJson(Map<String, dynamic> json) =>
-      _$CacheInfoFromJson(json);
-
-  Map<String, dynamic> toJson() => _$CacheInfoToJson(this);
-
-  @override
-  List<Object?> get props => [hit, key];
 }
 
 @JsonSerializable()

@@ -9,8 +9,10 @@ part 'search_response.g.dart';
 class SearchRequest extends Equatable {
   @JsonKey(name: 'chat_input')
   final String chatInput;
-  
-  @JsonKey(name: 'user_location')
+
+  // Backend rejects unknown keys (extra="forbid"), so this must be omitted
+  // entirely from the request body when null rather than sent as null.
+  @JsonKey(name: 'user_location', includeIfNull: false)
   final String? userLocation;
   
   final bool force;

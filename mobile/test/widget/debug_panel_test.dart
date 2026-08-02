@@ -65,9 +65,7 @@ void main() {
     });
 
     testWidgets('renders cache hit status', (WidgetTester tester) async {
-      const debugInfo = DebugInfo(
-        cache: CacheInfo(hit: true, key: 'test-key'),
-      );
+      const debugInfo = DebugInfo(cache: 'hit');
 
       await tester.pumpWidget(createDebugPanelTest(debugInfo: debugInfo));
 

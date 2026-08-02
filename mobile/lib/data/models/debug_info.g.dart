@@ -9,10 +9,9 @@ part of 'debug_info.dart';
 DebugInfo _$DebugInfoFromJson(Map<String, dynamic> json) => DebugInfo(
   requestId: json['request_id'] as String?,
   executionTimeMs: (json['execution_time_ms'] as num?)?.toInt(),
-  cache: json['cache'] == null
-      ? null
-      : CacheInfo.fromJson(json['cache'] as Map<String, dynamic>),
-  upstreamStatus: json['upstream_status'] as Map<String, dynamic>?,
+  cache: json['cache'] as String?,
+  upstreamStatus: (json['upstream_status'] as num?)?.toInt(),
+  upstreamError: json['upstream_error'] as String?,
   searchQuery: json['search_query'] as String?,
   confidence: (json['confidence'] as num?)?.toDouble(),
   keywords: (json['keywords'] as List<dynamic>?)
@@ -37,6 +36,7 @@ Map<String, dynamic> _$DebugInfoToJson(DebugInfo instance) => <String, dynamic>{
   'execution_time_ms': instance.executionTimeMs,
   'cache': instance.cache,
   'upstream_status': instance.upstreamStatus,
+  'upstream_error': instance.upstreamError,
   'search_query': instance.searchQuery,
   'confidence': instance.confidence,
   'keywords': instance.keywords,
@@ -58,14 +58,6 @@ Map<String, dynamic> _$ToolCallInfoToJson(ToolCallInfo instance) =>
       'count': instance.count,
       'durationMs': instance.durationMs,
     };
-
-CacheInfo _$CacheInfoFromJson(Map<String, dynamic> json) =>
-    CacheInfo(hit: json['hit'] as bool?, key: json['key'] as String?);
-
-Map<String, dynamic> _$CacheInfoToJson(CacheInfo instance) => <String, dynamic>{
-  'hit': instance.hit,
-  'key': instance.key,
-};
 
 GeospatialData _$GeospatialDataFromJson(Map<String, dynamic> json) =>
     GeospatialData(

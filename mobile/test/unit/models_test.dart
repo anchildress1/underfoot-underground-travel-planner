@@ -92,14 +92,14 @@ void main() {
       final json = {
         'request_id': 'req-123',
         'execution_time_ms': 250,
-        'cache': {'hit': true, 'key': 'cache-key'},
+        'cache': 'hit',
       };
 
       final debug = DebugInfo.fromJson(json);
 
       expect(debug.requestId, 'req-123');
       expect(debug.executionTimeMs, 250);
-      expect(debug.cache?.hit, true);
+      expect(debug.cache, 'hit');
     });
   });
 }
