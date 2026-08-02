@@ -23,11 +23,6 @@ Edit `mobile/android/local.properties`:
 GOOGLE_MAPS_API_KEY=YOUR_ACTUAL_API_KEY_HERE
 ```
 
-**Example:**
-```properties
-GOOGLE_MAPS_API_KEY=AIzaSyD1234567890abcdefghijklmnopqrstuv
-```
-
 ### 3. Restrict API Key (Recommended)
 
 For production, restrict your API key:

@@ -21,7 +21,7 @@
    
    Replace `YOUR_API_KEY_HERE` with your actual key:
    ```properties
-   GOOGLE_MAPS_API_KEY=AIzaSyD1234567890abcdefghijklmnopqrstuv
+   GOOGLE_MAPS_API_KEY=YOUR_ACTUAL_API_KEY_HERE
    ```
 
 3. **Rebuild & Run:**
