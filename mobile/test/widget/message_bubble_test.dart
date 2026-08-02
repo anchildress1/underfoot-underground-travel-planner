@@ -13,6 +13,8 @@ void main() {
           home: Scaffold(body: MessageBubble(message: message)),
         ),
       );
+      // Allow animation to start/run
+      await tester.pump(const Duration(seconds: 1)); 
 
       expect(find.text('Hello, world!'), findsOneWidget);
     });
@@ -32,6 +34,8 @@ void main() {
           home: Scaffold(body: MessageBubble(message: message)),
         ),
       );
+      // Allow animation to start/run
+      await tester.pump(const Duration(seconds: 1));
 
       expect(find.text('Here are some suggestions'), findsOneWidget);
     });
@@ -44,6 +48,8 @@ void main() {
           home: Scaffold(body: MessageBubble(message: message)),
         ),
       );
+      // Allow animation to start/run
+      await tester.pump(const Duration(seconds: 1));
 
       final semantics = tester.getSemantics(find.byType(MessageBubble));
       expect(semantics.label, contains('You'));

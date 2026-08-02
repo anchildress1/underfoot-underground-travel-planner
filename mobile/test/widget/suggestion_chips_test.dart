@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:underfoot_mobile/presentation/widgets/suggestion_chips.dart';
 
+import '../test_setup.dart';
+
 void main() {
-  setUpAll(() {
-    GoogleFonts.config.allowRuntimeFetching = false;
-  });
+  setUpAll(setupGoogleFontsForTests);
 
   group('SuggestionChips Widget', () {
     testWidgets('renders all suggestions', (WidgetTester tester) async {
@@ -24,7 +23,7 @@ void main() {
       expect(find.text('Food nearby'), findsOneWidget);
       expect(find.text('Museums'), findsOneWidget);
       expect(find.text('Parks'), findsOneWidget);
-      expect(find.text('Nightlife'), findsOneWidget);
+      // 'Nightlife' was removed from default suggestions
     });
 
     testWidgets('calls onChipTap when tapped', (WidgetTester tester) async {

@@ -33,7 +33,7 @@ void main() {
       await tester.enterText(find.byType(TextField), 'Test message');
       await tester.pump();
       await tester.tap(find.byIcon(Icons.arrow_upward));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(messageSent, 'Test message');
     });
@@ -48,7 +48,7 @@ void main() {
       await tester.enterText(find.byType(TextField), 'Test message');
       await tester.pump();
       await tester.tap(find.byIcon(Icons.arrow_upward));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       final textField = tester.widget<TextField>(find.byType(TextField));
       expect(textField.controller?.text, isEmpty);
@@ -77,7 +77,7 @@ void main() {
       );
 
       await tester.tap(find.byIcon(Icons.arrow_upward));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(messageSent, isEmpty);
     });
