@@ -15,7 +15,14 @@ class ChatPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChatBloc, ChatState>(
+    return BlocConsumer<ChatBloc, ChatState>(
+      listener: (context, state) {
+        if (state.status == ChatStatus.error && state.errorMessage != null) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+        }
+      },
       builder: (context, state) {
         return Column(
           children: [
@@ -34,12 +41,7 @@ class ChatPanel extends StatelessWidget {
               ),
             ChatInput(
               onSend: (message) {
-                context.read<ChatBloc>().add(
-                  ChatMessageSent(
-                    message, 
-                    userLocation: 'Grundy, VA',
-                  ),
-                );
+                context.read<ChatBloc>().add(ChatMessageSent(message));
               },
               enabled: state.status != ChatStatus.loading,
               focusNode: chatFocusNode,
@@ -110,12 +112,7 @@ class _EmptyState extends StatelessWidget {
             SuggestionChips(
               suggestions: DefaultSuggestions.all,
               onChipTap: (label) {
-                context.read<ChatBloc>().add(
-                  ChatMessageSent(
-                    'Find $label',
-                    userLocation: 'Grundy, VA',
-                  ),
-                );
+                context.read<ChatBloc>().add(ChatMessageSent('Find $label'));
               },
             ),
           ],
@@ -125,22 +122,52 @@ class _EmptyState extends StatelessWidget {
   }
 }
 
-class _MessageList extends StatelessWidget {
+class _MessageList extends StatefulWidget {
   final List<ChatMessage> messages;
   final bool isLoading;
 
   const _MessageList({required this.messages, required this.isLoading});
 
   @override
+  State<_MessageList> createState() => _MessageListState();
+}
+
+class _MessageListState extends State<_MessageList> {
+  final _scrollController = ScrollController();
+
+  @override
+  void didUpdateWidget(covariant _MessageList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.messages.length != oldWidget.messages.length ||
+        widget.isLoading != oldWidget.isLoading) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!_scrollController.hasClients) return;
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      controller: _scrollController,
       padding: const EdgeInsets.symmetric(vertical: 24),
-      itemCount: messages.length + (isLoading ? 1 : 0),
+      itemCount: widget.messages.length + (widget.isLoading ? 1 : 0),
       itemBuilder: (context, index) {
-        if (index == messages.length && isLoading) {
+        if (index == widget.messages.length && widget.isLoading) {
           return const _LoadingIndicator();
         }
-        return MessageBubble(message: messages[index]);
+        return MessageBubble(message: widget.messages[index]);
       },
     );
   }
