@@ -7,11 +7,14 @@ class ChatInput extends StatefulWidget {
   final int maxLength;
   final FocusNode? focusNode;
 
+  // Must match backend/chat/schemas.py MIN/MAX_CHAT_INPUT_LENGTH.
+  static const minLength = 2;
+
   const ChatInput({
     super.key,
     required this.onSend,
     this.enabled = true,
-    this.maxLength = 1000,
+    this.maxLength = 500,
     this.focusNode,
   });
 
@@ -39,7 +42,7 @@ class _ChatInputState extends State<ChatInput> {
 
   void _handleSubmit() {
     final text = _controller.text.trim();
-    if (text.isEmpty || !widget.enabled) return;
+    if (text.length < ChatInput.minLength || !widget.enabled) return;
 
     widget.onSend(text);
     _controller.clear();
@@ -133,7 +136,9 @@ class _ChatInputState extends State<ChatInput> {
                       const SizedBox(height: 4),
                       IconButton.filled(
                         onPressed:
-                            widget.enabled && _controller.text.trim().isNotEmpty
+                            widget.enabled &&
+                                _controller.text.trim().length >=
+                                    ChatInput.minLength
                             ? _handleSubmit
                             : null,
                         icon: const Icon(Icons.arrow_upward),
