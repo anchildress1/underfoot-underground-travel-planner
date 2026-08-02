@@ -26,7 +26,15 @@ if not SECRET_KEY:
     # Random per-process key so a fixed dev secret never ends up in source control.
     SECRET_KEY = get_random_secret_key()
 
-ALLOWED_HOSTS = ["*"]
+if DEBUG:
+    ALLOWED_HOSTS = ["*"]
+else:
+    _allowed_hosts_env = os.getenv("DJANGO_ALLOWED_HOSTS", "")
+    ALLOWED_HOSTS = [h.strip() for h in _allowed_hosts_env.split(",") if h.strip()]
+    if not ALLOWED_HOSTS:
+        raise ImproperlyConfigured(
+            "DJANGO_ALLOWED_HOSTS environment variable must be set when DEBUG=False"
+        )
 
 # Application definition
 
@@ -138,7 +146,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
-    r"^https://.*\.pages\.dev$",
+    r"^https://([a-z0-9-]+\.)?underfoot\.pages\.dev$",
     r"^https://.*checkmarkdevtools\.dev$",
     r"^http://localhost:\d+$",
     r"^http://127\.0\.0\.1:\d+$",
