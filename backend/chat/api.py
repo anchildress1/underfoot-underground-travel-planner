@@ -16,14 +16,8 @@ router = Router()
 
 
 @router.get("/health", response=HealthResponse)
-def health(request: HttpRequest) -> Any:
+async def health(request: HttpRequest) -> dict[str, Any]:  # noqa: ARG001
     """Comprehensive health check endpoint."""
-    # We need to make this async-compatible or use clean_sync/async_to_sync if services are async
-    # Django Ninja supports all async handlers.
-    return health_async(request)
-
-
-async def health_async(request: HttpRequest) -> dict[str, Any]:  # noqa: ARG001
     start = time.perf_counter()
     dependencies = {}
     try:
