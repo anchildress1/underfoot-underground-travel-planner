@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=str(Path(__file__).resolve().parent.parent.parent.parent / ".env"),
         case_sensitive=False,
+        extra="ignore",  # root .env is shared with Django settings (e.g. DEBUG)
     )
 
     log_level: str = "INFO"
