@@ -39,9 +39,9 @@ That's it! App will work on Android.
 
 See these files for detailed instructions:
 
-- **[GOOGLE_MAPS_SETUP.md](mobile/GOOGLE_MAPS_SETUP.md)** - Complete Google Maps setup guide
-- **[TESTING.md](mobile/TESTING.md)** - Android testing & deployment guide
-- **[setup-android-test.sh](mobile/setup-android-test.sh)** - Automated Android setup script
+- **[GOOGLE_MAPS_SETUP.md](GOOGLE_MAPS_SETUP.md)** - Complete Google Maps setup guide
+- **[TESTING.md](TESTING.md)** - Android testing & deployment guide
+- **[setup-android-test.sh](setup-android-test.sh)** - Automated Android setup script
 
 ---
 

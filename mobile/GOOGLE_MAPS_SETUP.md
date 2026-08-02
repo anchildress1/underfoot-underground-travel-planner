@@ -104,7 +104,14 @@ Same as above - inject key during build in CI/CD
 
 ## iOS Setup
 
-For iOS, edit `mobile/ios/Runner/AppDelegate.swift`:
+Add the key to `mobile/ios/Runner/Info.plist` (gitignored per-environment, or injected via CI — see below) instead of hardcoding it in source:
+
+```xml
+<key>GMSApiKey</key>
+<string>YOUR_IOS_API_KEY</string>
+```
+
+Then read it in `mobile/ios/Runner/AppDelegate.swift`:
 
 ```swift
 import UIKit
@@ -117,12 +124,16 @@ import GoogleMaps
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    GMSServices.provideAPIKey("YOUR_IOS_API_KEY")
+    if let apiKey = Bundle.main.object(forInfoDictionaryKey: "GMSApiKey") as? String {
+      GMSServices.provideAPIKey(apiKey)
+    }
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }
 ```
+
+For CI/CD, inject the key into `Info.plist` at build time (e.g. `PlistBuddy -c "Set :GMSApiKey $GOOGLE_MAPS_API_KEY" Info.plist`) rather than committing it.
 
 Enable **Maps SDK for iOS** in Google Cloud Console.
 

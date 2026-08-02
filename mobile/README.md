@@ -15,7 +15,7 @@ Flutter mobile app for the Underfoot Underground Travel Planner.
 ## Prerequisites
 
 - Flutter SDK 3.29+ ([Install Flutter](https://docs.flutter.dev/get-started/install))
-- For iOS development: Xcode with iOS 12.0+ support
+- For iOS development: Xcode with iOS 13.0+ support
 - For Android development: Android Studio with API level 21+
 - Backend running (see below)
 
