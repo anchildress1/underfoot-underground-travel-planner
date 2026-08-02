@@ -21,35 +21,45 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     ChatMessageSent event,
     Emitter<ChatState> emit,
   ) async {
-    debugPrint('💬 ChatBloc: Message sent: "${event.message}" from location: ${event.userLocation}');
+    if (kDebugMode) {
+      debugPrint('💬 ChatBloc: Message sent: "${event.message}"');
+    }
     final userMessage = ChatMessage.user(event.message);
-    final updatedMessages = [...state.messages, userMessage];
 
-    emit(state.copyWith(status: ChatStatus.loading, messages: updatedMessages));
+    // Read state.messages fresh at each emit (not a snapshot captured
+    // before the await) so concurrent in-flight sends don't clobber
+    // each other's messages.
+    emit(
+      state.copyWith(
+        status: ChatStatus.loading,
+        messages: [...state.messages, userMessage],
+      ),
+    );
 
     try {
-      debugPrint('🔄 ChatBloc: Calling search repository...');
+      if (kDebugMode) debugPrint('🔄 ChatBloc: Calling search repository...');
       final response = await _repository.search(
         event.message,
         userLocation: event.userLocation,
         force: event.force,
       );
 
-      debugPrint('✅ ChatBloc: Got ${response.places.length} places');
+      if (kDebugMode) {
+        debugPrint('✅ ChatBloc: Got ${response.places.length} places');
+      }
       final assistantMessage = ChatMessage.assistant(response);
-      final messagesWithResponse = [...updatedMessages, assistantMessage];
 
       emit(
         state.copyWith(
           status: ChatStatus.success,
-          messages: messagesWithResponse,
+          messages: [...state.messages, assistantMessage],
         ),
       );
     } on ApiException catch (e) {
-      debugPrint('❌ ChatBloc: ApiException: ${e.message}');
+      if (kDebugMode) debugPrint('❌ ChatBloc: ApiException: ${e.message}');
       emit(state.copyWith(status: ChatStatus.error, errorMessage: e.message));
     } catch (e) {
-      debugPrint('❌ ChatBloc: Unknown error: $e');
+      if (kDebugMode) debugPrint('❌ ChatBloc: Unknown error: $e');
       emit(
         state.copyWith(
           status: ChatStatus.error,

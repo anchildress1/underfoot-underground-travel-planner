@@ -24,8 +24,10 @@ class ApiService {
       force: force,
     );
 
-    debugPrint('🔍 API Request: POST $uri');
-    debugPrint('📦 Request body: ${jsonEncode(request.toJson())}');
+    if (kDebugMode) {
+      debugPrint('🔍 API Request: POST $uri');
+      debugPrint('📦 Request body: ${jsonEncode(request.toJson())}');
+    }
 
     try {
       final response = await _client
@@ -36,8 +38,12 @@ class ApiService {
           )
           .timeout(ApiConstants.timeout);
 
-      debugPrint('📥 Response status: ${response.statusCode}');
-      debugPrint('📥 Response body: ${response.body.substring(0, response.body.length > 200 ? 200 : response.body.length)}...');
+      if (kDebugMode) {
+        debugPrint('📥 Response status: ${response.statusCode}');
+        debugPrint(
+          '📥 Response body: ${response.body.substring(0, response.body.length > 200 ? 200 : response.body.length)}...',
+        );
+      }
 
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body) as Map<String, dynamic>;
@@ -49,7 +55,7 @@ class ApiService {
         message: _parseErrorMessage(response.body),
       );
     } catch (e) {
-      debugPrint('❌ API Error: $e');
+      if (kDebugMode) debugPrint('❌ API Error: $e');
       rethrow;
     }
   }
@@ -57,14 +63,14 @@ class ApiService {
   Future<bool> checkHealth() async {
     final uri = Uri.parse('$baseUrl${ApiConstants.healthEndpoint}');
 
-    debugPrint('🏥 Health check: GET $uri');
+    if (kDebugMode) debugPrint('🏥 Health check: GET $uri');
 
     try {
       final response = await _client.get(uri).timeout(ApiConstants.timeout);
-      debugPrint('🏥 Health status: ${response.statusCode}');
+      if (kDebugMode) debugPrint('🏥 Health status: ${response.statusCode}');
       return response.statusCode == 200;
     } catch (e) {
-      debugPrint('❌ Health check failed: $e');
+      if (kDebugMode) debugPrint('❌ Health check failed: $e');
       return false;
     }
   }

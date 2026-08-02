@@ -13,7 +13,7 @@ class ThemeCubit extends Cubit<ThemeState> {
   Future<void> _loadTheme() async {
     final prefs = await SharedPreferences.getInstance();
     final themeIndex = prefs.getInt(_themeKey);
-    if (themeIndex != null) {
+    if (themeIndex != null && !isClosed) {
       emit(ThemeState(ThemeMode.values[themeIndex]));
     }
   }
