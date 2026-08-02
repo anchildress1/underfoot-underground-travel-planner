@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:underfoot_mobile/data/models/models.dart';
 import 'package:underfoot_mobile/presentation/widgets/debug_panel.dart';
 
+import '../test_setup.dart';
+
 void main() {
-  setUpAll(() {
-    GoogleFonts.config.allowRuntimeFetching = false;
-  });
+  setUpAll(setupGoogleFontsForTests);
 
   Widget createDebugPanelTest({DebugInfo? debugInfo, bool isVisible = true, VoidCallback? onClose}) {
     return MaterialApp(
