@@ -26,8 +26,9 @@ echo "📝 Updating API base URL in $ENV_CONFIG..."
 # Backup original
 cp "$ENV_CONFIG" "$ENV_CONFIG.backup"
 
-# Replace localhost with local IP
-sed -i '' "s|defaultValue: 'http://localhost:8000'|defaultValue: 'http://$LOCAL_IP:8000'|g" "$ENV_CONFIG"
+# Replace localhost with local IP (portable across BSD/macOS and GNU/Linux sed)
+sed "s|defaultValue: 'http://localhost:8000'|defaultValue: 'http://$LOCAL_IP:8000'|g" "$ENV_CONFIG" > "$ENV_CONFIG.tmp"
+mv "$ENV_CONFIG.tmp" "$ENV_CONFIG"
 
 echo "✅ Updated API base URL to: http://$LOCAL_IP:8000"
 echo ""
