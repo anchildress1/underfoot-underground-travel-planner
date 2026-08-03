@@ -5,6 +5,8 @@ Django settings for underfoot project.
 import os
 from pathlib import Path
 
+from django.core.exceptions import ImproperlyConfigured
+from django.core.management.utils import get_random_secret_key
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -13,12 +15,26 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Load environment from repo root
 load_dotenv(BASE_DIR.parent / ".env")
 
-# Quick-start development settings - unsuitable for production
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-change-me-in-production")
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
-DEBUG = os.getenv("DEBUG", "True") == "True"
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+if not SECRET_KEY:
+    if not DEBUG:
+        raise ImproperlyConfigured(
+            "DJANGO_SECRET_KEY environment variable must be set when DEBUG=False"
+        )
+    # Random per-process key so a fixed dev secret never ends up in source control.
+    SECRET_KEY = get_random_secret_key()
 
-ALLOWED_HOSTS = ["*"]
+if DEBUG:
+    ALLOWED_HOSTS = ["*"]
+else:
+    _allowed_hosts_env = os.getenv("DJANGO_ALLOWED_HOSTS", "")
+    ALLOWED_HOSTS = [h.strip() for h in _allowed_hosts_env.split(",") if h.strip()]
+    if not ALLOWED_HOSTS:
+        raise ImproperlyConfigured(
+            "DJANGO_ALLOWED_HOSTS environment variable must be set when DEBUG=False"
+        )
 
 # Application definition
 
@@ -125,5 +141,15 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:3000",
     "http://127.0.0.1:5173",
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
 ]
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://([a-z0-9-]+\.)?underfoot\.pages\.dev$",
+    r"^https://([a-z0-9-]+\.)?checkmarkdevtools\.dev$",
+    r"^http://localhost:\d+$",
+    r"^http://127\.0\.0\.1:\d+$",
+]
+
 CORS_ALLOW_CREDENTIALS = True

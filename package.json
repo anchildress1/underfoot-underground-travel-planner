@@ -62,7 +62,7 @@
     "@commitlint/config-conventional": "^20.4.1",
     "@eslint/js": "^9.33.0",
     "concurrently": "^9.2.1",
-    "esbuild": "^0.27.2",
+    "esbuild": "^0.28.1",
     "eslint": "^9.38.0",
     "eslint-plugin-naming": "^0.1.10",
     "eslint-plugin-react": "^7.37.5",

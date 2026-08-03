@@ -16,14 +16,8 @@ router = Router()
 
 
 @router.get("/health", response=HealthResponse)
-def health(request: HttpRequest) -> Any:
+async def health(request: HttpRequest) -> dict[str, Any]:  # noqa: ARG001
     """Comprehensive health check endpoint."""
-    # We need to make this async-compatible or use clean_sync/async_to_sync if services are async
-    # Django Ninja supports all async handlers.
-    return health_async(request)
-
-
-async def health_async(_request: HttpRequest) -> dict[str, Any]:
     start = time.perf_counter()
     dependencies = {}
     try:
@@ -42,7 +36,7 @@ async def health_async(_request: HttpRequest) -> dict[str, Any]:
 
 
 @router.post("/search", response={200: SearchResponse, 500: ErrorResponse})
-async def search(_request: HttpRequest, data: SearchRequest) -> Any:
+async def search(request: HttpRequest, data: SearchRequest) -> Any:  # noqa: ARG001
     """Execute search with AI orchestration."""
     try:
         sanitized_input = InputSanitizer.sanitize(data.chat_input)
