@@ -52,6 +52,7 @@ jobs:
         working-directory: ./backend
         env:
           # Test environment variables - using dummy values for CI
+          DEBUG: "True"
           OPENAI_API_KEY: "test-key"
           GOOGLE_MAPS_API_KEY: "test-key"
           SERPAPI_KEY: "test-key"
