@@ -1,0 +1,11 @@
+name: "CodeQL config"
+
+paths-ignore:
+  - "**/node_modules/**"
+  - "**/dist/**"
+  - "**/.venv/**"
+  - "**/htmlcov/**"
+  - "**/coverage/**"
+  - "**/playwright-report/**"
+  - "**/test-results/**"
+  - "**/.worktrees/**"

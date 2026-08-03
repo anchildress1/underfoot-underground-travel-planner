@@ -51,6 +51,7 @@ jobs:
           languages: ${{ matrix.language }}
           # Enable additional queries for better security coverage
           queries: security-extended,security-and-quality
+          config-file: ./.github/codeql/codeql-config.yml
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
