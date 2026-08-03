@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Debug-build-only: permits cleartext HTTP so on-device testing can reach
+  the backend over the local network (see setup-android-test.sh), which
+  Android 9+ blocks by default. This file lives under src/debug/, so
+  release builds never include it and keep cleartext traffic blocked.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>
