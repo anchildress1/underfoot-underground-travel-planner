@@ -40,13 +40,13 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       # codeql-action@v4: Upgraded from v3, runs on Node.js 24
       # Query syntax remains compatible: security-extended,security-and-quality
       # https://github.blog/changelog/2025-10-28-upcoming-deprecation-of-codeql-action-v3/
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@6bc82e05fd0ea64601dd4b465378bbcf57de0314 # v4.32.1
+        uses: github/codeql-action/init@f205ea1c3313d32999d8d6a48b4f6530d4437b38 # v4.37.4
         with:
           languages: ${{ matrix.language }}
           # Enable additional queries for better security coverage
@@ -54,7 +54,7 @@ jobs:
           config-file: ./.github/codeql/codeql-config.yml
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: '24'
           cache: 'npm'
@@ -63,6 +63,6 @@ jobs:
         run: npm install --ignore-scripts
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@6bc82e05fd0ea64601dd4b465378bbcf57de0314 # v4.32.1
+        uses: github/codeql-action/analyze@f205ea1c3313d32999d8d6a48b4f6530d4437b38 # v4.37.4
         with:
           category: '/language:${{matrix.language}}'
