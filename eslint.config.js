@@ -1,9 +1,6 @@
 import { defineConfig, globalIgnores } from 'eslint/config';
 import js from '@eslint/js';
 import globals from 'globals';
-import reactHooks from 'eslint-plugin-react-hooks';
-import reactRefresh from 'eslint-plugin-react-refresh';
-import react from 'eslint-plugin-react';
 import unicorn from 'eslint-plugin-unicorn';
 
 export default defineConfig([
@@ -44,7 +41,7 @@ export default defineConfig([
       // Prevent commented-out code
       'no-unused-labels': 'error',
       'no-unreachable': 'error',
-      // Ban eslint-disable comments
+      // Ban disabling lint rules inline via comment directives
       'no-warning-comments': ['error', { terms: ['eslint-disable'], location: 'anywhere' }],
       // Unicorn rules for code quality
       'unicorn/no-unused-properties': 'error',
