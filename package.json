@@ -78,5 +78,8 @@
   },
   "dependencies": {
     "vite": "^8.2.0"
+  },
+  "overrides": {
+    "undici": "^8.10.0"
   }
 }
